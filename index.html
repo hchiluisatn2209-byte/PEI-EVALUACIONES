@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Kahoot — Planificación PEI Corp</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --navy:    #0d1b2e;
+    --navy2:   #162236;
+    --blue:    #1a73c8;
+    --blue-lt: #e8f1fb;
+    --orange:  #f5a623;
+    --orange-lt:#fff6e5;
+    --purple:  #5b2d8e;
+    --purple-lt:#f0eaf8;
+    --teal:    #2e7d9e;
+    --teal-lt: #e5f4f9;
+    --green:   #1b7a3e;
+    --green-lt:#e6f4ec;
+    --red:     #c0392b;
+    --red-lt:  #fdecea;
+    --amber:   #e07b00;
+    --amber-lt:#fff3e0;
+    --gray-bg: #f2f4f7;
+    --gray-bd: #dde1e8;
+    --text:    #0d1b2e;
+    --text2:   #4a5568;
+    --text3:   #7a8599;
+    --white:   #ffffff;
+    --radius:  8px;
+    --radius-lg: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--gray-bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+  /* ── NAV ── */
+  .topbar {
+    background: var(--navy);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-brand { display: flex; flex-direction: column; }
+  .topbar-brand strong { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: .5px; }
+  .topbar-brand span   { color: #8ba3c4; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .topbar-meta { display: flex; gap: 8px; }
+  .meta-pill {
+    background: rgba(255,255,255,.1);
+    color: #c8d8ee;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,.15);
+  }
+
+  /* ── SUB-NAV ── */
+  .subnav {
+    background: var(--navy2);
+    padding: 0 32px;
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .subnav a {
+    color: #8ba3c4;
+    font-size: 12px;
+    padding: 12px 14px;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color .2s, border-color .2s;
+    white-space: nowrap;
+  }
+  .subnav a:hover { color: #fff; }
+  .subnav a.active { color: #fff; border-bottom-color: var(--orange); }
+
+  /* ── MAIN ── */
+  .main { max-width: 1200px; margin: 0 auto; padding: 28px 24px 48px; }
+
+  /* ── PAGE HEADER ── */
+  .page-header { margin-bottom: 24px; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+  .page-title { font-size: 26px; font-weight: 700; color: var(--navy); }
+  .page-sub   { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+  /* ── SECTION LABEL ── */
+  .sec-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.4px;
+    text-transform: uppercase; color: var(--text3);
+    margin: 28px 0 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-label::after { content:''; flex:1; height:1px; background: var(--gray-bd); }
+
+  /* ── KPI ROW ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+  .kpi-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-bd);
+    padding: 16px 18px;
+  }
+  .kpi-icon { font-size: 20px; margin-bottom: 8px; }
+  .kpi-label { font-size: 10px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--text3); }
+  .kpi-val   { font-size: 28px; font-weight: 700; color: var(--navy); margin: 2px 0; }
+  .kpi-sub   { font-size: 11px; color: var(--text2); }
+  .kpi-card.accent { border-top: 3px solid var(--orange); }
+  .kpi-card.blue   { border-top: 3px solid var(--blue); }
+
+  /* ── MODULE PODIOS ── */
+  .mod-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+  .mod-card {
+    background: var(--white);
+    border: 1px solid var(--gray-bd);
+    border-radius: var(--radius-lg);
+    padding: 14px 12px 10px;
+    border-top: 3px solid var(--blue);
+  }
+  .mod-num  { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--blue); text-transform: uppercase; margin-bottom: 2px; }
+  .mod-name { font-size: 10px; font-weight: 600; color: var(--navy); margin-bottom: 10px; line-height: 1.3; min-height: 28px; }
+  .podium   { display: flex; gap: 5px; align-items: flex-end; justify-content: center; }
+  .pl       { display: flex; flex-direction: column; align-items: center; gap: 2px; flex:1; }
+  .medal    { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .gold     { background: var(--orange); color: #fff; }
+  .silver   { background: #9eaaba; color: #fff; }
+  .bronze   { background: #c0714a; color: #fff; }
+  .pbar     { width: 100%; border-radius: 3px 3px 0 0; }
+  .pb1      { background: var(--orange-lt); border: 1px solid var(--orange); height: 56px; }
+  .pb2      { background: var(--gray-bg); border: 1px solid var(--gray-bd); height: 42px; }
+  .pb3      { background: var(--gray-bg); border: 1px solid var(--gray-bd); height: 30px; }
+  .pname    { font-size: 9px; font-weight: 600; color: var(--navy); text-align: center; line-height: 1.2; }
+  .pscore   { font-size: 8px; color: var(--text2); text-align: center; }
+  .pcorrect { font-size: 8px; color: var(--text3); text-align: center; }
+
+  /* ── GENERAL PODIO ── */
+  .general-wrap {
+    background: var(--white);
+    border: 1px solid var(--gray-bd);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    border-top: 4px solid var(--navy);
+  }
+  .gen-inner { display: flex; gap: 20px; align-items: flex-end; justify-content: center; min-height: 150px; }
+  .gen-pl    { display: flex; flex-direction: column; align-items: center; gap: 5px; flex:1; max-width: 180px; }
+  .gen-medal { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+  .gen-bar   { width: 100%; border-radius: 6px 6px 0 0; }
+  .gb1 { background: var(--orange-lt); border: 1.5px solid var(--orange); height: 100px; }
+  .gb2 { background: var(--gray-bg);   border: 1px solid var(--gray-bd); height: 76px; }
+  .gb3 { background: var(--gray-bg);   border: 1px solid var(--gray-bd); height: 56px; }
+  .gen-name  { font-size: 16px; font-weight: 700; color: var(--navy); text-align: center; }
+  .gen-score { font-size: 12px; color: var(--text2); text-align: center; }
+  .gen-detail{ font-size: 10px; color: var(--text3); text-align: center; line-height: 1.6; }
+  .pill-gold { background: var(--orange); color: #fff; font-size: 10px; padding: 2px 10px; border-radius: 10px; font-weight: 700; display: inline-block; margin-bottom: 3px; }
+
+  /* ── CHARTS ROW ── */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .chart-card {
+    background: var(--white);
+    border: 1px solid var(--gray-bd);
+    border-radius: var(--radius-lg);
+    padding: 18px 18px 14px;
+  }
+  .chart-title { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+  .chart-wrap  { position: relative; width: 100%; }
+  .pie-legend  { display: flex; gap: 14px; justify-content: center; margin-top: 8px; font-size: 11px; color: var(--text2); }
+  .leg-sq      { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+
+  /* ── TABLES ── */
+  .table-card {
+    background: var(--white);
+    border: 1px solid var(--gray-bd);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .table-head {
+    background: var(--navy);
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .table-head h3 { color: #fff; font-size: 13px; font-weight: 600; }
+  .table-head span { color: #8ba3c4; font-size: 11px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; padding: 8px 14px; color: var(--text3); font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; border-bottom: 1px solid var(--gray-bd); background: var(--gray-bg); }
+  td { padding: 7px 14px; border-bottom: 1px solid var(--gray-bd); color: var(--navy); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafd; }
+  .rank-num { color: var(--text3); font-weight: 600; }
+  .player-name { font-weight: 600; color: var(--navy); }
+  .badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .badge-green  { background: var(--green-lt);  color: var(--green); }
+  .badge-amber  { background: var(--amber-lt);  color: var(--amber); }
+  .badge-red    { background: var(--red-lt);    color: var(--red); }
+  .badge-blue   { background: var(--blue-lt);   color: var(--blue); }
+  .badge-orange { background: var(--orange-lt); color: #b56a00; }
+  .badge-purple { background: var(--purple-lt); color: var(--purple); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    color: #8ba3c4;
+    text-align: center;
+    padding: 14px;
+    font-size: 11px;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-row, .mod-grid { grid-template-columns: repeat(2,1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <strong>TELCONET</strong>
+    <span>Gestión de Proyectos — PMO</span>
+  </div>
+  <div class="topbar-meta">
+    <span class="meta-pill">PEI CORP · Evaluaciones Kahoot</span>
+    <span class="meta-pill">Versión 1 · 2025</span>
+  </div>
+</header>
+
+<!-- SUB-NAV -->
+<nav class="subnav">
+  <a href="#kpis">Resumen</a>
+  <a href="#modulos" class="active">Módulos</a>
+  <a href="#general">Podio General</a>
+  <a href="#charts">Análisis</a>
+  <a href="#top10">Top 10</a>
+  <a href="#refuerzo">Refuerzo</a>
+</nav>
+
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header" id="kpis">
+    <p class="eyebrow">Sección · Dashboard Ejecutivo</p>
+    <h1 class="page-title">Resultados de Evaluación Kahoot — Planificación</h1>
+    <p class="page-sub">Análisis consolidado de 5 módulos · Final Scores · PEI Corp</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi-card blue">
+      <div class="kpi-icon">📋</div>
+      <div class="kpi-label">Módulos evaluados</div>
+      <div class="kpi-val">5</div>
+      <div class="kpi-sub">Capacitación Planificación</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-icon">👥</div>
+      <div class="kpi-label">Participantes únicos</div>
+      <div class="kpi-val" id="kUniq">—</div>
+      <div class="kpi-sub">Jugadores activos</div>
+    </div>
+    <div class="kpi-card accent">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-label">Prom. puntaje global</div>
+      <div class="kpi-val" id="kAvg">—</div>
+      <div class="kpi-sub">De 10,000 puntos máx.</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-label">Tasa de aciertos</div>
+      <div class="kpi-val" id="kAcc">—</div>
+      <div class="kpi-sub">Respuestas correctas</div>
+    </div>
+    <div class="kpi-card accent">
+      <div class="kpi-icon">🏆</div>
+      <div class="kpi-label">Puntaje más alto</div>
+      <div class="kpi-val">9,748</div>
+      <div class="kpi-sub">cdalmeida · Módulo 4</div>
+    </div>
+  </div>
+
+  <!-- PODIOS POR MÓDULO -->
+  <div class="sec-label" id="modulos">Podio por módulo</div>
+  <div class="mod-grid" id="modPodios"></div>
+
+  <!-- PODIO GENERAL -->
+  <div class="sec-label" id="general">Podio general — jugadores con rank 1 · prom. en módulos donde lideran</div>
+  <div class="general-wrap">
+    <div class="gen-inner">
+      <div class="gen-pl">
+        <p class="gen-name">femoran</p>
+        <p class="gen-score">8,470 pts</p>
+        <p class="gen-detail">1.º en Módulo 3<br>Prom. 8,470 pts</p>
+        <div class="gen-medal silver">2</div>
+        <div class="gen-bar gb2"></div>
+      </div>
+      <div class="gen-pl">
+        <span class="pill-gold">3 oros · Campeón</span>
+        <p class="gen-name">cdalmeida</p>
+        <p class="gen-score">9,748 pts</p>
+        <p class="gen-detail">1.º en Mód. 2, 4 y 5<br>Prom. 9,362 pts</p>
+        <div class="gen-medal gold">1</div>
+        <div class="gen-bar gb1"></div>
+      </div>
+      <div class="gen-pl">
+        <p class="gen-name">echiluiza</p>
+        <p class="gen-score">8,777 pts</p>
+        <p class="gen-detail">1.º en Módulo 1<br>Prom. 8,777 pts</p>
+        <div class="gen-medal bronze">3</div>
+        <div class="gen-bar gb3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="sec-label" id="charts">Análisis de resultados</div>
+  <div class="charts-row">
+    <div class="chart-card" style="grid-column: span 1;">
+      <div class="chart-title">Promedio de puntaje por módulo</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="cMod" role="img" aria-label="Promedio de puntaje por módulo"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Distribución de aciertos</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="cDist" role="img" aria-label="Distribución de respuestas correctas"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Correctas vs. incorrectas</div>
+      <div class="chart-wrap" style="height:190px">
+        <canvas id="cPie" role="img" aria-label="Correctas vs incorrectas"></canvas>
+      </div>
+      <div class="pie-legend">
+        <span><span class="leg-sq" style="background:#1a73c8"></span>Correctas</span>
+        <span><span class="leg-sq" style="background:#c0392b"></span>Incorrectas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP 10 -->
+  <div class="sec-label" id="top10">Top 10 jugadores — mejor rendimiento global (mín. 2 módulos)</div>
+  <div class="table-card">
+    <div class="table-head">
+      <h3>Ranking de rendimiento global</h3>
+      <span>Promedio de puntaje acumulado · todos los módulos participados</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Jugador</th><th>Módulos</th>
+          <th>Prom. puntaje</th><th>Prom. aciertos</th><th>Oros</th><th>Nivel</th>
+        </tr>
+      </thead>
+      <tbody id="topTbl"></tbody>
+    </table>
+  </div>
+
+  <!-- REFUERZO -->
+  <div class="sec-label" id="refuerzo">Jugadores que necesitan refuerzo (≤6 aciertos en algún módulo)</div>
+  <div class="table-card">
+    <div class="table-head" style="background: var(--red);">
+      <h3>Oportunidades de mejora</h3>
+      <span>Módulo más débil por jugador · prioridad de atención</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Jugador</th><th>Módulo más débil</th><th>Aciertos</th><th>Puntaje</th><th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="weakTbl"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer class="footer">
+  TELCONET · Gestión de Proyectos PMO · Dashboard Evaluaciones Kahoot · PEI Corp 2025
+</footer>
+
+<script>
+const MODS_NAMES = ['Planificación','Gest. Productos','Act. Complement.','Planif./Proyectos','Ingresos/Tercerz.'];
+
+const RAW = [
+  { mod:0, rows:[
+    ['echiluiza',8777,9,1],['raacosta',8544,9,1],['durbano',8442,9,1],['klmartinez',8433,9,1],
+    ['wsalazar',8432,9,1],['lgaibor',8426,9,1],['sagarcia',8339,9,1],['pluna',8291,9,1],
+    ['abguallpa',7975,9,1],['ansanchez',7709,8,2],['cdalmeida',7638,8,2],['jkleon',7605,8,2],
+    ['sortiz',7597,8,2],['morozco',7534,8,2],['jcamalle',7329,8,2],['cralarcon',7231,8,2],
+    ['mspalma',6994,8,2],['aonate',6987,8,2],['kremache',6761,8,2],['kcorrea',6709,7,3],
+    ['mvaldez',6291,7,3],['dagallardo',6275,7,3],['vcruz',6185,7,3],['sbaque',6059,7,3],
+    ['jkguaman',5713,6,4],['mamartinezv',5669,6,4],['ealopezt',5668,7,3],['dvera',5665,6,4],
+    ['erchoez',5528,6,4],['jlcastillot',5269,6,4],['aarroyo',5172,6,4],['amguzman',4580,5,5],
+    ['wgaona',4317,5,5],['dcoronel',4184,5,5],['bsangolqui',3776,4,6],['vtacuri',3678,4,6],
+    ['aavellan',3652,4,6],['esrivera',3430,4,6]
+  ]},
+  { mod:1, rows:[
+    ['cdalmeida',8637,9,1],['dvera',8089,9,1],['cralarcon',7919,9,1],['aavellan',7429,8,2],
+    ['lgaibor',7373,8,2],['erchoez',7365,8,2],['dcoronel',7201,8,2],['durbano',7149,8,2],
+    ['morozco',7038,8,2],['kcorrea',6702,7,3],['abguallpa',6565,7,3],['vcruz',6508,7,3],
+    ['dagallardo',6493,7,3],['raacosta',6471,7,3],['bsangolqui',6433,7,3],['jlcastillot',6429,7,3],
+    ['jkguaman',6107,7,3],['vcarrillo',6020,7,3],['ansanchez',5901,7,3],['jkleon',5823,6,4],
+    ['sortiz',5775,6,4],['jcamalle',5739,6,4],['echiluiza',5699,6,4],['femoran',5699,6,4],
+    ['ealopezt',5486,7,3],['amguzman',5230,7,3],['sbaque',5172,6,4],['aarroyo',5132,7,3],
+    ['kremache',5059,6,4],['aonate',5020,6,4],['mvaldez',4637,6,4],['klmartinez',4560,5,5],
+    ['esrivera',4225,6,4],['clhidalgo',4174,5,5],['wgaona',4127,5,5],['pluna',3949,5,5],
+    ['wsalazar',3741,4,6],['vtacuri',3544,4,6],['mspalma',2553,3,7],['mamartinezv',990,1,9]
+  ]},
+  { mod:2, rows:[
+    ['femoran',8470,9,1],['sortiz',8382,9,1],['cralarcon',8125,9,1],['jkleon',7738,8,2],
+    ['lgaibor',7722,8,2],['echiluiza',7674,8,2],['dagallardo',7615,8,2],['wsalazar',7386,8,2],
+    ['vcarrillo',6973,8,2],['kremache',6844,8,2],['cdalmeida',6802,7,3],['raacosta',6655,7,3],
+    ['jcamalle',6654,7,3],['aonate',6379,8,2],['klmartinez',6271,7,3],['mvaldez',6257,7,3],
+    ['sagarcia',6225,7,3],['vcruz',6074,7,3],['abguallpa',6031,7,3],['bsangolqui',5958,7,3],
+    ['clhidalgo',5908,7,3],['erchoez',5867,7,3],['wgaona',5843,7,3],['ealopezt',5842,7,3],
+    ['aarroyo',5791,7,3],['mamartinezv',5637,6,4],['dvera',5545,6,4],['durbano',5518,6,4],
+    ['pluna',5474,7,3],['kcorrea',5453,6,4],['jlcastillot',5357,7,3],['ansanchez',5334,6,4],
+    ['dcoronel',5279,6,4],['amguzman',5167,6,4],['esrivera',4853,6,4],['vtacuri',4667,6,4],
+    ['mspalma',4554,5,5],['jkguaman',4395,5,5],['morozco',3848,4,6],['aavellan',3590,4,6]
+  ]},
+  { mod:3, rows:[
+    ['cdalmeida',9748,10,0],['kcorrea',9704,10,0],['dagallardo',9678,10,0],['wsalazar',9571,10,0],
+    ['vcarrillo',9514,10,0],['sortiz',9512,10,0],['jkguaman',9478,10,0],['dvera',9367,10,0],
+    ['ansanchez',9259,10,0],['bsangolqui',9246,10,0],['abguallpa',9082,10,0],['mspalma',8947,10,0],
+    ['clhidalgo',8837,10,0],['jcamalle',8571,9,1],['sagarcia',8566,10,0],['jalbarracin',8559,9,1],
+    ['lgaibor',8537,9,1],['femoran',8499,9,1],['pluna',8477,9,1],['dcoronel',8429,9,1],
+    ['vcruz',8335,9,1],['wgaona',7909,9,1],['jlcastillot',7861,10,0],['esrivera',7806,9,1],
+    ['raacosta',7681,8,2],['morozco',7636,8,2],['durbano',7488,8,2],['mvaldez',7294,8,2],
+    ['erchoez',7250,8,2],['sbaque',7083,8,2],['aarroyo',7054,9,1],['aonate',7009,9,1],
+    ['vtacuri',6795,8,2],['jkleon',6756,7,3],['ealopezt',6072,7,3],['aavellan',5762,6,4],
+    ['klmartinez',5484,6,4],['cralarcon',5393,6,4],['amguzman',5356,6,4],['mamartinezv',4866,5,5],
+    ['kremache',3741,4,6]
+  ]},
+  { mod:4, rows:[
+    ['cdalmeida',9702,10,0],['ealopezt',9470,10,0],['abguallpa',9279,10,0],['femoran',9118,10,0],
+    ['sortiz',9116,10,0],['bsangolqui',9037,10,0],['aonate',8983,10,0],['dvera',8740,10,0],
+    ['jkguaman',8625,9,1],['ggavilanez',8558,9,1],['jcamalle',8548,9,1],['jkleon',8455,9,1],
+    ['sagarcia',8440,9,1],['cralarcon',8239,9,1],['mvaldez',8158,9,1],['kremache',7881,9,1],
+    ['vcarrillo',7754,9,1],['durbano',7697,9,1],['morozco',7679,9,1],['aarroyo',7673,10,0],
+    ['echiluiza',7617,8,2],['mamartinezv',7590,8,2],['kcorrea',7580,8,2],['erchoez',7422,8,2],
+    ['klmartinez',7359,8,2],['lgaibor',7318,8,2],['amguzman',7288,8,2],['wsalazar',7108,8,2],
+    ['ansanchez',7063,8,2],['esrivera',7045,8,2],['clhidalgo',6810,9,1],['pluna',6682,8,2],
+    ['wgaona',6342,8,2],['jlcastillot',5979,8,2],['sbaque',5945,8,2],['jalbarracin',5530,6,4],
+    ['mspalma',5345,7,3],['vtacuri',4857,6,4],['aavellan',3670,4,6],['raacosta',0,0,10]
+  ]}
+];
+
+const nrm = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+const map = {};
+RAW.forEach(({mod,rows}) => {
+  rows.forEach(([p,score,correct,incorrect]) => {
+    if (score === 0) return;
+    const k = nrm(p);
+    if (!map[k]) map[k] = {name:p, mods:{}, golds:0};
+    if (!map[k].mods[mod] || score > map[k].mods[mod].score)
+      map[k].mods[mod] = {score,correct,incorrect};
+  });
+});
+RAW.forEach(({rows}) => {
+  const k = nrm(rows[0][0]);
+  if (map[k]) map[k].golds += 1;
+});
+const players = Object.values(map);
+players.forEach(p => {
+  const ms = Object.values(p.mods);
+  p.modCount   = ms.length;
+  p.avgScore   = Math.round(ms.reduce((a,m)=>a+m.score,0)/ms.length);
+  p.avgCorrect = +(ms.reduce((a,m)=>a+m.correct,0)/ms.length).toFixed(1);
+  p.minCorrect = Math.min(...ms.map(m=>m.correct));
+  p.minModKey  = Object.entries(p.mods).sort((a,b)=>a[1].correct-b[1].correct)[0];
+});
+
+let totalC=0, totalA=0;
+RAW.forEach(({rows}) => rows.forEach(([,s,c,i]) => { if(s===0) return; totalC+=c; totalA+=c+i; }));
+
+document.getElementById('kUniq').textContent = players.length;
+document.getElementById('kAvg').textContent  = Math.round(players.reduce((a,p)=>a+p.avgScore,0)/players.length).toLocaleString();
+document.getElementById('kAcc').textContent  = Math.round(totalC/totalA*100)+'%';
+
+const PODIOS = [
+  { i:0, top:[['echiluiza',8777,'9/10'],['raacosta',8544,'9/10'],['durbano',8442,'9/10']] },
+  { i:1, top:[['cdalmeida',8637,'9/10'],['DVera',8089,'9/10'],['Cralarcon',7919,'9/10']] },
+  { i:2, top:[['femoran',8470,'9/10'],['Sortiz',8382,'9/10'],['Cralarcon',8125,'9/10']] },
+  { i:3, top:[['cdalmeida',9748,'10/10'],['kcorrea',9704,'10/10'],['dagallardo',9678,'10/10']] },
+  { i:4, top:[['cdalmeida',9702,'10/10'],['ealopezt',9470,'10/10'],['abguallpa',9279,'10/10']] }
+];
+const modNums = ['Módulo 1','Módulo 2','Módulo 3','Módulo 4','Módulo 5'];
+const podCont = document.getElementById('modPodios');
+PODIOS.forEach(({i,top}) => {
+  const [p1,p2,p3] = top;
+  podCont.innerHTML += `<div class="mod-card">
+    <div class="mod-num">${modNums[i]}</div>
+    <div class="mod-name">${MODS_NAMES[i]}</div>
+    <div class="podium">
+      <div class="pl"><p class="pname">${p2[0]}</p><p class="pscore">${Number(p2[1]).toLocaleString()}</p><p class="pcorrect">${p2[2]}</p><div class="medal silver">2</div><div class="pbar pb2"></div></div>
+      <div class="pl"><p class="pname">${p1[0]}</p><p class="pscore">${Number(p1[1]).toLocaleString()}</p><p class="pcorrect">${p1[2]}</p><div class="medal gold">1</div><div class="pbar pb1"></div></div>
+      <div class="pl"><p class="pname">${p3[0]}</p><p class="pscore">${Number(p3[1]).toLocaleString()}</p><p class="pcorrect">${p3[2]}</p><div class="medal bronze">3</div><div class="pbar pb3"></div></div>
+    </div>
+  </div>`;
+});
+
+const modAvgs = RAW.map(({rows}) => {
+  const v = rows.filter(r=>r[1]>0);
+  return Math.round(v.reduce((a,r)=>a+r[1],0)/v.length);
+});
+
+new Chart(document.getElementById('cMod'),{
+  type:'bar',
+  data:{
+    labels: MODS_NAMES,
+    datasets:[{label:'Prom.',data:modAvgs,backgroundColor:'#1a73c8',borderRadius:5,borderSkipped:'bottom',barThickness:28}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw.toLocaleString()+' pts'}}},
+    scales:{
+      x:{ticks:{color:'#7a8599',font:{size:9}},grid:{display:false}},
+      y:{min:0,max:10000,ticks:{color:'#7a8599',font:{size:9},callback:v=>v.toLocaleString()},grid:{color:'#eaeef3'},border:{display:false}}
+    }
+  }
+});
+
+const buckets=[0,0,0,0,0];
+RAW.forEach(({rows})=>rows.forEach(([,s,c])=>{
+  if(s===0) return;
+  if(c===10) buckets[0]++; else if(c===9) buckets[1]++; else if(c===8) buckets[2]++; else if(c===7) buckets[3]++; else buckets[4]++;
+}));
+new Chart(document.getElementById('cDist'),{
+  type:'bar',
+  data:{labels:['10/10','9/10','8/10','7/10','≤6/10'],datasets:[{label:'Participaciones',data:buckets,
+    backgroundColor:['#1b7a3e','#1a73c8','#f5a623','#e07b00','#c0392b'],
+    borderRadius:5,borderSkipped:'bottom',barThickness:26}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' participaciones'}}},
+    scales:{x:{ticks:{color:'#7a8599',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#7a8599',font:{size:10}},grid:{color:'#eaeef3'},border:{display:false}}}
+  }
+});
+
+const pctC = Math.round(totalC/totalA*100);
+new Chart(document.getElementById('cPie'),{
+  type:'doughnut',
+  data:{labels:['Correctas','Incorrectas'],datasets:[{data:[pctC,100-pctC],backgroundColor:['#1a73c8','#c0392b'],borderWidth:0,hoverOffset:4}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}}
+  }
+});
+
+const sorted = [...players].filter(p=>p.modCount>=2).sort((a,b)=>b.avgScore-a.avgScore).slice(0,10);
+const topTbl = document.getElementById('topTbl');
+sorted.forEach((p,i) => {
+  const pct = Math.round(p.avgCorrect*10);
+  const badge = pct>=90
+    ? '<span class="badge badge-green">Excelente</span>'
+    : pct>=80
+    ? '<span class="badge badge-amber">Bueno</span>'
+    : '<span class="badge badge-red">Regular</span>';
+  const goldB = p.golds>0
+    ? `<span class="badge badge-orange">${p.golds} oro${p.golds>1?'s':''}</span>`
+    : '<span style="color:#b0b8c8">—</span>';
+  topTbl.innerHTML+=`<tr>
+    <td class="rank-num">${i+1}</td>
+    <td class="player-name">${p.name}</td>
+    <td>${p.modCount}</td>
+    <td><strong>${p.avgScore.toLocaleString()}</strong></td>
+    <td>${p.avgCorrect}/10</td>
+    <td>${goldB}</td>
+    <td>${badge}</td>
+  </tr>`;
+});
+
+const weak = players.filter(p=>p.minCorrect<=6).sort((a,b)=>a.minCorrect-b.minCorrect).slice(0,16);
+const weakTbl = document.getElementById('weakTbl');
+weak.forEach(p => {
+  const [mi,md] = p.minModKey;
+  const st = md.correct<=4
+    ? '<span class="badge badge-red">Crítico</span>'
+    : '<span class="badge badge-amber">Refuerzo</span>';
+  weakTbl.innerHTML+=`<tr>
+    <td class="player-name">${p.name}</td>
+    <td style="color:#4a5568">${MODS_NAMES[+mi]}</td>
+    <td>${md.correct}/10</td>
+    <td>${md.score.toLocaleString()}</td>
+    <td>${st}</td>
+  </tr>`;
+});
+</script>
+</body>
+</html>
