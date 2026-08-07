@@ -3,29 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Kahoot — Planificación · Telconet</title>
+<title>Dashboard Kahoot — Proyectos e Implementación</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root {
-  --navy:#0d1b2e; --navy2:#162236; --blue:#1a73c8; --blue-lt:#e8f1fb;
-  --orange:#f5a623; --orange-lt:#fff6e5;
-  --green:#1b7a3e; --green-lt:#e6f4ec;
-  --red:#c0392b; --red-lt:#fdecea;
-  --amber:#e07b00; --amber-lt:#fff3e0;
-  --purple:#5b2d8e; --purple-lt:#f0eaf8;
-  --gray-bg:#f2f4f7; --gray-bd:#dde1e8;
-  --text:#0d1b2e; --text2:#4a5568; --text3:#7a8599; --white:#ffffff;
+:root{
+  --navy:#0d1b2e;--navy2:#162236;--blue:#1a73c8;--blue-lt:#e8f1fb;
+  --orange:#f5a623;--orange-lt:#fff6e5;
+  --green:#1b7a3e;--green-lt:#e6f4ec;
+  --red:#c0392b;--red-lt:#fdecea;
+  --amber:#e07b00;--amber-lt:#fff3e0;
+  --purple:#5b2d8e;--purple-lt:#f0eaf8;
+  --gray-bg:#f2f4f7;--gray-bd:#dde1e8;
+  --text:#0d1b2e;--text2:#4a5568;--text3:#7a8599;--white:#ffffff;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gray-bg);color:var(--text);font-size:14px;}
-
-/* ── TOPBAR ── */
 .topbar{background:var(--navy);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:200;}
 .topbar-brand strong{color:#fff;font-size:16px;font-weight:700;letter-spacing:.5px;}
 .topbar-brand span{display:block;color:#8ba3c4;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;}
 .meta-pill{background:rgba(255,255,255,.1);color:#c8d8ee;font-size:11px;padding:4px 12px;border-radius:4px;border:1px solid rgba(255,255,255,.15);}
-
-/* ── MÓDULOS NAV nivel 1 ── */
 .modnav{background:var(--navy2);padding:0 32px;display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:56px;z-index:190;}
 .mod-tab{background:none;border:none;cursor:pointer;color:#8ba3c4;font-size:13px;font-weight:500;padding:13px 22px;font-family:inherit;border-bottom:3px solid transparent;display:inline-flex;align-items:center;gap:7px;transition:color .2s,border-color .2s;white-space:nowrap;}
 .mod-tab:hover:not(.disabled){color:#fff;}
@@ -33,65 +29,48 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gray-bg);color:var
 .mod-tab.disabled{opacity:.35;cursor:not-allowed;}
 .mod-num{background:rgba(255,255,255,.1);color:#8ba3c4;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;letter-spacing:.5px;}
 .mod-tab.active .mod-num{background:var(--orange);color:#fff;}
-
-/* ── SUBNAV nivel 2 ── */
 .subnav{background:var(--navy);padding:0 32px;display:flex;gap:0;border-bottom:2px solid rgba(255,255,255,.06);position:sticky;top:105px;z-index:180;}
 .subnav a{color:#8ba3c4;font-size:12px;font-weight:500;padding:11px 16px;text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .2s,border-color .2s;white-space:nowrap;cursor:pointer;}
 .subnav a:hover{color:#fff;}
 .subnav a.active{color:#fff;border-bottom-color:var(--orange);}
-
-/* ── SECTIONS ── */
+/* módulo wrapper: solo uno visible a la vez */
+.mod-content{display:none;}
+.mod-content.active{display:block;}
 .page-section{display:none;animation:fadeIn .2s ease;}
 .page-section.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .main{max-width:1280px;margin:0 auto;padding:24px 24px 60px;}
-
-/* ── BANNER MÓDULO ── */
 .mod-banner{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:10px 16px;background:var(--blue-lt);border:1px solid #b5d4f4;border-radius:10px;border-left:4px solid var(--blue);}
 .mod-banner-tag{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--blue);}
 .mod-banner-name{font-size:13px;font-weight:600;color:var(--navy);}
 .mod-banner-hint{margin-left:auto;font-size:11px;color:var(--text3);}
-
-/* ── PAGE HEADER ── */
 .page-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--blue);margin-bottom:6px;}
 .page-title{font-size:26px;font-weight:700;color:var(--navy);}
 .page-sub{font-size:13px;color:var(--text2);margin-top:4px;}
-
-/* ── SECTION LABEL ── */
 .sec{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text3);margin:24px 0 12px;display:flex;align-items:center;gap:8px;}
 .sec::after{content:'';flex:1;height:1px;background:var(--gray-bd);}
-.sec:first-child{margin-top:0;}
-
-/* ── KPI ── */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
 .kpi{background:var(--white);border-radius:12px;border:1px solid var(--gray-bd);padding:16px 18px;}
-.kpi.accent{border-top:3px solid var(--orange);}
-.kpi.blue{border-top:3px solid var(--blue);}
+.kpi.accent{border-top:3px solid var(--orange);}.kpi.blue{border-top:3px solid var(--blue);}
 .kpi-icon{font-size:20px;margin-bottom:8px;}
 .kpi-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);}
 .kpi-val{font-size:28px;font-weight:700;color:var(--navy);margin:2px 0;}
 .kpi-sub{font-size:11px;color:var(--text2);}
-
-/* ── MÓDULOS PODIOS ── */
-.mod-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.mod-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.mod-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
 .mod-card{background:var(--white);border:1px solid var(--gray-bd);border-radius:12px;padding:14px 12px 10px;border-top:3px solid var(--blue);}
 .mod-card-num{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--blue);text-transform:uppercase;margin-bottom:2px;}
 .mod-card-name{font-size:10px;font-weight:600;color:var(--navy);margin-bottom:10px;line-height:1.3;min-height:28px;}
 .podium{display:flex;gap:5px;align-items:flex-end;justify-content:center;}
 .pl{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;}
 .medal{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
-.gold{background:var(--orange);color:#fff;}
-.silver{background:#9eaaba;color:#fff;}
-.bronze{background:#c0714a;color:#fff;}
+.gold{background:var(--orange);color:#fff;}.silver{background:#9eaaba;color:#fff;}.bronze{background:#c0714a;color:#fff;}
 .pbar{width:100%;border-radius:3px 3px 0 0;}
 .pb1{background:var(--orange-lt);border:1px solid var(--orange);height:56px;}
 .pb2{background:var(--gray-bg);border:1px solid var(--gray-bd);height:42px;}
 .pb3{background:var(--gray-bg);border:1px solid var(--gray-bd);height:30px;}
 .pname{font-size:9px;font-weight:600;color:var(--navy);text-align:center;line-height:1.2;}
-.pscore{font-size:8px;color:var(--text2);text-align:center;}
-.pcorrect{font-size:8px;color:var(--text3);text-align:center;}
-
-/* ── PODIO GENERAL ── */
+.pscore{font-size:8px;color:var(--text2);text-align:center;}.pcorrect{font-size:8px;color:var(--text3);text-align:center;}
 .podio-card{background:var(--white);border:1px solid var(--gray-bd);border-radius:12px;border-top:4px solid var(--navy);padding:22px 24px;}
 .gen-podium{display:flex;gap:16px;align-items:flex-end;justify-content:center;min-height:140px;}
 .gen-pl{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;max-width:180px;}
@@ -104,37 +83,28 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gray-bg);color:var
 .gen-score{font-size:12px;color:var(--text2);text-align:center;}
 .gen-detail{font-size:10px;color:var(--text3);text-align:center;line-height:1.6;}
 .pill-gold{background:var(--orange);color:#fff;font-size:10px;padding:2px 10px;border-radius:10px;font-weight:700;display:inline-block;margin-bottom:3px;}
-
-/* ── CHARTS ── */
-.charts-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px;}
+.charts-2{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;}
 .chart-card{background:var(--white);border:1px solid var(--gray-bd);border-radius:12px;padding:18px;}
 .chart-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;}
 .chart-wrap{position:relative;width:100%;}
 .pie-legend{display:flex;gap:14px;justify-content:center;margin-top:8px;font-size:11px;color:var(--text2);}
 .leg-sq{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle;}
-
-/* ── FILTROS ── */
 .filter-bar{background:var(--white);border:1px solid var(--gray-bd);border-radius:12px;padding:16px 20px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:16px;}
 .filter-group{display:flex;flex-direction:column;gap:5px;}
 .filter-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);}
 .filter-group select{appearance:none;background:var(--gray-bg);border:1px solid var(--gray-bd);border-radius:8px;padding:7px 32px 7px 12px;font-size:13px;color:var(--navy);cursor:pointer;min-width:180px;font-family:inherit;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8599' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
-.filter-group select:focus{outline:2px solid var(--blue);border-color:var(--blue);}
 .filter-reset{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;align-self:flex-end;}
 .filter-reset:hover{background:var(--blue);}
 .filter-count{align-self:flex-end;font-size:12px;color:var(--text3);padding-bottom:9px;}
-
-/* ── TABLAS ── */
 .table-card{background:var(--white);border:1px solid var(--gray-bd);border-radius:12px;overflow:hidden;margin-bottom:20px;}
 .table-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
-.table-head.navy{background:var(--navy);}
-.table-head.red{background:var(--red);}
+.table-head.navy{background:var(--navy);}.table-head.red{background:var(--red);}
 .table-head h3{color:#fff;font-size:13px;font-weight:600;}
 .table-head span{color:rgba(255,255,255,.6);font-size:11px;}
 .tbl-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
 th{text-align:left;padding:9px 14px;color:var(--text3);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--gray-bd);background:var(--gray-bg);cursor:pointer;user-select:none;white-space:nowrap;}
-th:hover{color:var(--blue);}
-th.sorted{color:var(--blue);}
+th:hover{color:var(--blue);}th.sorted{color:var(--blue);}
 td{padding:8px 14px;border-bottom:1px solid var(--gray-bd);color:var(--navy);}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#f8fafd;}
@@ -145,17 +115,10 @@ tr:hover td{background:#f8fafd;}
 .b-red{background:var(--red-lt);color:var(--red);}
 .b-orange{background:var(--orange-lt);color:#b56a00;}
 .b-blue{background:var(--blue-lt);color:var(--blue);}
-.b-purple{background:var(--purple-lt);color:var(--purple);}
 .empty-state{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;}
 .empty-state div{font-size:32px;margin-bottom:8px;}
-
-/* ── FOOTER ── */
 .footer{background:var(--navy);color:#8ba3c4;text-align:center;padding:14px;font-size:11px;margin-top:40px;}
-
-@media(max-width:900px){
-  .kpi-row,.mod-grid{grid-template-columns:repeat(2,1fr);}
-  .charts-grid{grid-template-columns:1fr;}
-}
+@media(max-width:900px){.kpi-row,.mod-grid-5,.mod-grid-4{grid-template-columns:repeat(2,1fr);}.charts-2{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -174,896 +137,918 @@ tr:hover td{background:#f8fafd;}
 
 <!-- ── NIVEL 1: MÓDULOS ── -->
 <nav class="modnav">
-  <button class="mod-tab active" onclick="selectMod(this,'planificacion')">
-    <span class="mod-num">01</span> Planificación
-  </button>
-  <button class="mod-tab disabled" title="Próximamente">
-    <span class="mod-num">02</span> Implementación
-  </button>
-  <button class="mod-tab disabled" title="Próximamente">
-    <span class="mod-num">03</span> O&amp;M
-  </button>
+  <button class="mod-tab active"   onclick="switchModulo('global',this)"><span class="mod-num">00</span> Global</button>
+  <button class="mod-tab"          onclick="switchModulo('planificacion',this)"><span class="mod-num">01</span> Planificación</button>
+  <button class="mod-tab"          onclick="switchModulo('implementacion',this)"><span class="mod-num">02</span> Implementación</button>
+  <button class="mod-tab disabled" title="Próximamente"><span class="mod-num">03</span> O&amp;M</button>
 </nav>
 
-<!-- ── NIVEL 2: SECCIONES ── -->
-<nav class="subnav" id="subnav">
-  <a onclick="showSection('analisis')"  class="active"  id="tab-analisis">Análisis</a>
-  <a onclick="showSection('modulos')"                   id="tab-modulos">Módulos</a>
-  <a onclick="showSection('podio')"                     id="tab-podio">Podio general</a>
-  <a onclick="showSection('top10')"                     id="tab-top10">Top 10</a>
-  <a onclick="showSection('refuerzo')"                  id="tab-refuerzo">Refuerzo</a>
-</nav>
+<!-- ── NIVEL 2: SUBNAV (compartido, cambia según módulo activo) ── -->
+<nav class="subnav" id="subnav"></nav>
 
 <main class="main">
 
-  <!-- ════════════════════════════════════════
-       SECCIÓN: MÓDULOS
-  ════════════════════════════════════════ -->
-  <section class="page-section" id="sec-modulos">
+<!-- ════════════ MÓDULO 00: GLOBAL ════════════ -->
+<div class="mod-content active" id="mc-global">
+
+  <!-- ANÁLISIS GLOBAL -->
+  <section class="page-section active" id="g-analisis">
+    <div class="mod-banner" style="background:#fff6e5;border-color:#f5a623;border-left-color:#e07b00;">
+      <span class="mod-banner-tag" style="color:#e07b00;">Análisis consolidado</span>
+      <span style="width:1px;height:16px;background:#e07b00;opacity:.4"></span>
+      <span class="mod-banner-name">00 · Global — Planificación + Implementación</span>
+      <span class="mod-banner-hint">Se actualizará automáticamente al agregar O&amp;M</span>
+    </div>
     <div style="margin-bottom:20px;">
-      <p class="page-eyebrow">Detalle por módulo</p>
-      <h1 class="page-title">Podio de cada módulo evaluado</h1>
-      <p class="page-sub">Top 3 jugadores por puntaje · Final Scores</p>
+      <p class="page-eyebrow">Dashboard Ejecutivo · Análisis Global</p>
+      <h1 class="page-title">Resultados Consolidados — Todos los Módulos</h1>
+      <p class="page-sub">Promedio de todos los módulos donde participó cada jugador · Planificación + Implementación · PEI Corp 2026</p>
     </div>
-    <div class="mod-grid" id="modPodios"></div>
-
-    <div class="sec">Ranking detallado por módulo</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;" id="modTabBtns"></div>
-    <div class="table-card">
-      <div class="table-head navy">
-        <h3 id="modRankTitle">Ranking — Planificación</h3>
-        <span id="modRankSub"></span>
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr>
-            <th>#</th><th>Jugador</th><th>Puntaje</th><th>Aciertos</th><th>Errores</th>
-          </tr></thead>
-          <tbody id="modRankTbl"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════
-       SECCIÓN: PODIO GENERAL
-  ════════════════════════════════════════ -->
-  <section class="page-section" id="sec-podio">
-    <div style="margin-bottom:20px;">
-      <p class="page-eyebrow">Podio general</p>
-      <h1 class="page-title">Campeones de la capacitación</h1>
-      <p class="page-sub">Jugadores con rank 1 en algún módulo · desempate por puntaje más alto</p>
-    </div>
-    <div class="podio-card">
-      <div class="gen-podium">
-        <div class="gen-pl">
-          <p class="gen-name">femoran</p>
-          <p class="gen-score">8,470 pts</p>
-          <p class="gen-detail">1.º en Módulo 3<br>Prom. 8,470 pts</p>
-          <div class="gen-medal silver">2</div>
-          <div class="gen-bar gb2"></div>
-        </div>
-        <div class="gen-pl">
-          <span class="pill-gold">🥇 3 oros · Campeón</span>
-          <p class="gen-name">cdalmeida</p>
-          <p class="gen-score">9,748 pts</p>
-          <p class="gen-detail">1.º en Mód. 2, 4 y 5<br>Prom. 9,362 pts</p>
-          <div class="gen-medal gold">1</div>
-          <div class="gen-bar gb1"></div>
-        </div>
-        <div class="gen-pl">
-          <p class="gen-name">echiluiza</p>
-          <p class="gen-score">8,777 pts</p>
-          <p class="gen-detail">1.º en Módulo 1<br>Prom. 8,777 pts</p>
-          <div class="gen-medal bronze">3</div>
-          <div class="gen-bar gb3"></div>
-        </div>
-      </div>
-      <p style="font-size:10px;color:var(--text3);margin-top:14px;border-top:1px solid var(--gray-bd);padding-top:10px;">
-        Criterio: jugadores con rank 1 en al menos un módulo · desempate por puntaje más alto alcanzado
-      </p>
-    </div>
-
-    <div class="sec">Todos los primeros lugares</div>
-    <div class="table-card">
-      <div class="table-head navy">
-        <h3>Ganadores por módulo</h3>
-        <span>Rank 1 · Total score · de 10 preguntas</span>
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr>
-            <th>Módulo</th>
-            <th>Jugador</th>
-            <th>Puntaje</th>
-            <th>Correctas</th>
-            <th>Incorrectas</th>
-            <th>Resultado</th>
-          </tr></thead>
-          <tbody>
-            <tr>
-              <td>Módulo 1 — Planificación</td>
-              <td class="player-name">echiluiza</td>
-              <td><strong>8,777</strong></td>
-              <td><span class="badge b-blue">9 / 10</span></td>
-              <td><span class="badge b-red">1 error</span></td>
-              <td style="font-size:11px;color:var(--text3)">Ganó con 1 respuesta incorrecta</td>
-            </tr>
-            <tr>
-              <td>Módulo 2 — Gestión de productos</td>
-              <td class="player-name">cdalmeida</td>
-              <td><strong>8,637</strong></td>
-              <td><span class="badge b-blue">9 / 10</span></td>
-              <td><span class="badge b-red">1 error</span></td>
-              <td style="font-size:11px;color:var(--text3)">Ganó con 1 respuesta incorrecta</td>
-            </tr>
-            <tr>
-              <td>Módulo 3 — Act. complementarias</td>
-              <td class="player-name">femoran</td>
-              <td><strong>8,470</strong></td>
-              <td><span class="badge b-blue">9 / 10</span></td>
-              <td><span class="badge b-red">1 error</span></td>
-              <td style="font-size:11px;color:var(--text3)">Ganó con 1 respuesta incorrecta</td>
-            </tr>
-            <tr style="background:#f6fef9;">
-              <td>Módulo 4 — Planif. / Proyectos</td>
-              <td class="player-name">cdalmeida</td>
-              <td><strong>9,748</strong></td>
-              <td><span class="badge b-green">10 / 10</span></td>
-              <td><span class="badge b-green">0 errores</span></td>
-              <td style="font-size:11px;color:var(--green);font-weight:600">✓ Puntaje perfecto</td>
-            </tr>
-            <tr style="background:#f6fef9;">
-              <td>Módulo 5 — Ingresos / Tercerizados</td>
-              <td class="player-name">cdalmeida</td>
-              <td><strong>9,702</strong></td>
-              <td><span class="badge b-green">10 / 10</span></td>
-              <td><span class="badge b-green">0 errores</span></td>
-              <td style="font-size:11px;color:var(--green);font-weight:600">✓ Puntaje perfecto</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="font-size:10px;color:var(--text3);padding:10px 16px;border-top:1px solid var(--gray-bd);">
-        Nota: el puntaje varía aunque las respuestas sean iguales porque Kahoot penaliza el tiempo de respuesta — responder más rápido suma más puntos. Por eso un 9/10 puede valer más que otro 9/10.
-      </p>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════
-       SECCIÓN: ANÁLISIS
-  ════════════════════════════════════════ -->
-  <section class="page-section active" id="sec-analisis">
-    <div style="margin-bottom:20px;">
-      <p class="page-eyebrow">Análisis de resultados</p>
-      <h1 class="page-title">Métricas y distribución del grupo</h1>
-      <p class="page-sub">Basado en todos los módulos evaluados · mín. 1 participación</p>
-    </div>
-
     <div class="kpi-row" style="margin-bottom:20px;">
-      <div class="kpi blue"><div class="kpi-icon">📋</div><div class="kpi-label">Módulos evaluados</div><div class="kpi-val">5</div><div class="kpi-sub">Capacitación planificación</div></div>
-      <div class="kpi blue"><div class="kpi-icon">👥</div><div class="kpi-label">Participantes</div><div class="kpi-val" id="kUniqA">—</div><div class="kpi-sub">Jugadores activos</div></div>
-      <div class="kpi accent"><div class="kpi-icon">📊</div><div class="kpi-label">Prom. puntaje</div><div class="kpi-val" id="kAvgA">—</div><div class="kpi-sub">De 10,000 puntos máx.</div></div>
-      <div class="kpi blue"><div class="kpi-icon">✅</div><div class="kpi-label">Tasa de aciertos</div><div class="kpi-val" id="kAccA">—</div><div class="kpi-sub">Respuestas correctas</div></div>
-      <div class="kpi accent"><div class="kpi-icon">🏆</div><div class="kpi-label">Puntaje máximo</div><div class="kpi-val">9,748</div><div class="kpi-sub">cdalmeida · Módulo 4</div></div>
+      <div class="kpi" style="border-top:3px solid var(--orange);"><div class="kpi-icon">📋</div><div class="kpi-label">Módulos activos</div><div class="kpi-val" id="g-kMods">—</div><div class="kpi-sub">Planif. + Implementación</div></div>
+      <div class="kpi blue"><div class="kpi-icon">👥</div><div class="kpi-label">Participantes únicos</div><div class="kpi-val" id="g-kUniq">—</div><div class="kpi-sub">Jugadores activos</div></div>
+      <div class="kpi accent"><div class="kpi-icon">📊</div><div class="kpi-label">Prom. puntaje global</div><div class="kpi-val" id="g-kAvg">—</div><div class="kpi-sub">De 10,000 puntos máx.</div></div>
+      <div class="kpi blue"><div class="kpi-icon">✅</div><div class="kpi-label">Tasa de aciertos</div><div class="kpi-val" id="g-kAcc">—</div><div class="kpi-sub">Respuestas correctas</div></div>
+      <div class="kpi accent"><div class="kpi-icon">🏆</div><div class="kpi-label">Puntaje máximo</div><div class="kpi-val" id="g-kMax">—</div><div class="kpi-sub" id="g-kMaxSub">—</div></div>
     </div>
-    <div class="charts-grid" style="grid-template-columns:1.2fr 1fr;">
-      <div class="chart-card">
-        <div class="chart-title">Promedio de puntaje por módulo</div>
-        <div class="chart-wrap" style="height:220px"><canvas id="cModA" role="img" aria-label="Promedio por módulo"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Correctas vs. incorrectas</div>
-        <div class="chart-wrap" style="height:190px"><canvas id="cPieA" role="img" aria-label="Correctas vs incorrectas"></canvas></div>
-        <div class="pie-legend">
-          <span><span class="leg-sq" style="background:#1a73c8"></span>Correctas</span>
-          <span><span class="leg-sq" style="background:#c0392b"></span>Incorrectas</span>
-        </div>
+    <div class="sec">Comparativa de promedio por sección</div>
+    <div class="charts-2">
+      <div class="chart-card"><div class="chart-title">Promedio de puntaje — Planificación vs Implementación</div><div class="chart-wrap" style="height:230px"><canvas id="g-cComp"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Correctas vs. incorrectas (global)</div><div class="chart-wrap" style="height:190px"><canvas id="g-cPie"></canvas></div>
+        <div class="pie-legend"><span><span class="leg-sq" style="background:#1a73c8"></span>Correctas</span><span><span class="leg-sq" style="background:#c0392b"></span>Incorrectas</span></div>
       </div>
     </div>
-    <div class="sec">Distribución por nivel de rendimiento</div>
-    <div class="charts-grid" style="grid-template-columns:1fr;">
-      <div class="chart-card">
-        <div class="chart-title">Aciertos por módulo (promedio del grupo)</div>
-        <div class="chart-wrap" style="height:240px"><canvas id="cAciertosA" role="img" aria-label="Aciertos promedio por módulo"></canvas></div>
-      </div>
-    </div>
-
-    <div class="sec">Puntaje máximo por módulo</div>
-    <div class="chart-card">
-      <div class="chart-title">Mejor resultado en cada módulo — jugador y puntaje</div>
-      <div class="chart-wrap" style="height:280px">
-        <canvas id="cMaxA" role="img" aria-label="Puntaje máximo por módulo"></canvas>
-      </div>
-    </div>
+    <div class="sec">Promedio de aciertos por sección</div>
+    <div class="chart-card"><div class="chart-title">Aciertos promedio — Planificación vs Implementación</div><div class="chart-wrap" style="height:210px"><canvas id="g-cAciertos"></canvas></div></div>
   </section>
 
-  <!-- ════════════════════════════════════════
-       SECCIÓN: TOP 10
-  ════════════════════════════════════════ -->
-  <section class="page-section" id="sec-top10">
+  <!-- PODIO GLOBAL -->
+  <section class="page-section" id="g-podio">
     <div style="margin-bottom:20px;">
-      <p class="page-eyebrow">Top 10 jugadores</p>
-      <h1 class="page-title">Mejor rendimiento global</h1>
-      <p class="page-sub">Promedio de puntaje acumulado · mínimo 2 módulos para ranking justo</p>
+      <p class="page-eyebrow">Podio general global</p>
+      <h1 class="page-title">Campeones absolutos de la capacitación</h1>
+      <p class="page-sub">Solo jugadores que completaron <strong>todos los módulos activos</strong> (Planificación + Implementación) · ordenados por promedio global</p>
     </div>
-
-    <!-- Filtros -->
-    <div class="filter-bar">
-      <div class="filter-group">
-        <span class="filter-label">Jugador</span>
-        <select id="fJugador"><option value="">Todos los jugadores</option></select>
-      </div>
-      <div class="filter-group">
-        <span class="filter-label">Módulo</span>
-        <select id="fMod">
-          <option value="">Todos los módulos</option>
-          <option value="0">Módulo 1 — Planificación</option>
-          <option value="1">Módulo 2 — Gestión de productos</option>
-          <option value="2">Módulo 3 — Act. complementarias</option>
-          <option value="3">Módulo 4 — Planif. / Proyectos</option>
-          <option value="4">Módulo 5 — Ingresos / Tercerizados</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <span class="filter-label">Estado</span>
-        <select id="fEstado">
-          <option value="">Todos</option>
-          <option value="excelente">Excelente</option>
-          <option value="bueno">Bueno</option>
-          <option value="regular">Regular</option>
-          <option value="critico">Crítico</option>
-          <option value="refuerzo">Refuerzo</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <span class="filter-label">Nivel de aciertos</span>
-        <select id="fNivel">
-          <option value="">Todos los niveles</option>
-          <option value="10">10/10 — Perfecto</option>
-          <option value="9">9/10 — Muy bueno</option>
-          <option value="8">8/10 — Bueno</option>
-          <option value="7">7/10 — Aceptable</option>
-          <option value="lte6">≤6/10 — Por mejorar</option>
-        </select>
-      </div>
-      <button class="filter-reset" onclick="resetFilters()">↺ Limpiar</button>
-      <div class="filter-count" id="filterCount"></div>
-    </div>
-
+    <div class="podio-card" id="g-genPodioWrap"></div>
+    <div class="sec">Top 10 global — mejor promedio entre todos los módulos</div>
     <div class="table-card">
       <div class="table-head navy" style="gap:12px;">
-        <h3>🏆 Top 10 — Ranking de rendimiento global</h3>
+        <h3>🏆 Top 10 Global</h3>
         <div style="display:flex;align-items:center;gap:12px;">
-          <span id="tableSubtitle" style="color:rgba(255,255,255,.6);font-size:11px;">Promedio de puntaje · mín. 2 módulos</span>
-          <button id="btnVerTodos" onclick="toggleVerTodos()"
-            style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">
-            Ver todos
-          </button>
+          <span style="color:rgba(255,255,255,.6);font-size:11px;">Solo jugadores que completaron todos los módulos activos</span>
+          <button id="g-btnVerTodos" onclick="gToggleVerTodos()" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">Ver todos</button>
         </div>
       </div>
       <div class="tbl-wrap">
-        <table>
-          <thead><tr>
-            <th onclick="sortTable('rank')">#<span id="si-rank"> ↕</span></th>
-            <th onclick="sortTable('name')">Jugador<span id="si-name"> ↕</span></th>
-            <th onclick="sortTable('mods')">Módulos<span id="si-mods"> ↕</span></th>
-            <th onclick="sortTable('score')">Prom. puntaje<span id="si-score"> ↓</span></th>
-            <th onclick="sortTable('correct')">Prom. aciertos<span id="si-correct"> ↕</span></th>
-            <th onclick="sortTable('golds')">Oros<span id="si-golds"> ↕</span></th>
-            <th>Estado</th>
-            <th>Nivel</th>
-          </tr></thead>
-          <tbody id="mainTbl"></tbody>
-        </table>
+        <table><thead><tr>
+          <th onclick="gSortTable('rank')">#<span id="g-si-rank"> ↕</span></th>
+          <th onclick="gSortTable('name')">Jugador<span id="g-si-name"> ↕</span></th>
+          <th>Módulos totales</th>
+          <th onclick="gSortTable('score')">Prom. puntaje global<span id="g-si-score"> ↓</span></th>
+          <th onclick="gSortTable('correct')">Prom. aciertos<span id="g-si-correct"> ↕</span></th>
+          <th>Mejor sección</th>
+          <th>Estado</th>
+        </tr></thead>
+        <tbody id="g-mainTbl"></tbody></table>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════
-       SECCIÓN: REFUERZO
-  ════════════════════════════════════════ -->
-  <section class="page-section" id="sec-refuerzo">
+  <!-- REFUERZO GLOBAL -->
+  <section class="page-section" id="g-refuerzo">
     <div style="margin-bottom:20px;">
-      <p class="page-eyebrow">Oportunidades de mejora</p>
+      <p class="page-eyebrow">Refuerzo global</p>
       <h1 class="page-title">Jugadores que necesitan refuerzo</h1>
-      <p class="page-sub">≤6 aciertos en al menos un módulo · prioridad de atención</p>
+      <p class="page-sub">≤6 aciertos en algún módulo de cualquier sección</p>
     </div>
+    <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+      <div class="kpi" style="border-top:3px solid var(--red);"><div class="kpi-icon">🔴</div><div class="kpi-label">Estado crítico</div><div class="kpi-val" id="g-kCritico">—</div><div class="kpi-sub">≤4 aciertos</div></div>
+      <div class="kpi" style="border-top:3px solid var(--amber);"><div class="kpi-icon">🟡</div><div class="kpi-label">Necesitan refuerzo</div><div class="kpi-val" id="g-kRefuerzo">—</div><div class="kpi-sub">5–6 aciertos</div></div>
+      <div class="kpi blue"><div class="kpi-icon">📌</div><div class="kpi-label">Mayor concentración</div><div class="kpi-val" id="g-kSeccion">—</div><div class="kpi-sub" id="g-kSeccionSub">con más jugadores débiles</div></div>
+      <div class="kpi blue"><div class="kpi-icon">📉</div><div class="kpi-label">Módulo más débil</div><div class="kpi-val" id="g-kModDebil">—</div><div class="kpi-sub" id="g-kModDebilSub">—</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head red"><h3>Listado consolidado — jugadores por reforzar</h3><span>Peor resultado en todos los módulos</span></div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Jugador</th><th>Sección más débil</th><th>Módulo más débil</th><th>Aciertos mín.</th><th>Puntaje</th><th>Estado</th></tr></thead>
+        <tbody id="g-weakTbl"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+</div><!-- fin mc-global -->
+
+<!-- ════════════ MÓDULO 01: PLANIFICACIÓN ════════════ -->
+<div class="mod-content" id="mc-planificacion">
+
+  <!-- ANÁLISIS PLAN -->
+  <section class="page-section active" id="p-analisis">
+    <div class="mod-banner">
+      <span class="mod-banner-tag">Módulo activo</span>
+      <span style="width:1px;height:16px;background:var(--blue);opacity:.3"></span>
+      <span class="mod-banner-name">01 · Planificación</span>
+      <span class="mod-banner-hint">5 submódulos evaluados</span>
+    </div>
+    <div style="margin-bottom:20px;">
+      <p class="page-eyebrow">Dashboard Ejecutivo · Análisis</p>
+      <h1 class="page-title">Resultados de Evaluación Kahoot — Planificación</h1>
+      <p class="page-sub">Análisis consolidado de 5 módulos · Final Scores · PEI Corp</p>
+    </div>
+    <div class="kpi-row" style="margin-bottom:20px;">
+      <div class="kpi blue"><div class="kpi-icon">📋</div><div class="kpi-label">Módulos evaluados</div><div class="kpi-val">5</div><div class="kpi-sub">Planificación</div></div>
+      <div class="kpi blue"><div class="kpi-icon">👥</div><div class="kpi-label">Participantes</div><div class="kpi-val" id="p-kUniq">—</div><div class="kpi-sub">Jugadores activos</div></div>
+      <div class="kpi accent"><div class="kpi-icon">📊</div><div class="kpi-label">Prom. puntaje</div><div class="kpi-val" id="p-kAvg">—</div><div class="kpi-sub">De 10,000 puntos máx.</div></div>
+      <div class="kpi blue"><div class="kpi-icon">✅</div><div class="kpi-label">Tasa de aciertos</div><div class="kpi-val" id="p-kAcc">—</div><div class="kpi-sub">Respuestas correctas</div></div>
+      <div class="kpi accent"><div class="kpi-icon">🏆</div><div class="kpi-label">Puntaje máximo</div><div class="kpi-val">9,748</div><div class="kpi-sub">cdalmeida · Módulo 4</div></div>
+    </div>
+    <div class="sec">Análisis de resultados</div>
+    <div class="charts-2">
+      <div class="chart-card"><div class="chart-title">Promedio de puntaje por módulo</div><div class="chart-wrap" style="height:230px"><canvas id="p-cMod"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Correctas vs. incorrectas</div><div class="chart-wrap" style="height:190px"><canvas id="p-cPie"></canvas></div>
+        <div class="pie-legend"><span><span class="leg-sq" style="background:#1a73c8"></span>Correctas</span><span><span class="leg-sq" style="background:#c0392b"></span>Incorrectas</span></div>
+      </div>
+    </div>
+    <div class="sec">Aciertos por módulo (promedio del grupo)</div>
+    <div class="chart-card"><div class="chart-title">Promedio de aciertos por módulo</div><div class="chart-wrap" style="height:230px"><canvas id="p-cAciertos"></canvas></div></div>
+    <div class="sec">Puntaje máximo por módulo</div>
+    <div class="chart-card"><div class="chart-title">Mejor resultado en cada módulo — jugador y puntaje</div><div class="chart-wrap" style="height:260px"><canvas id="p-cMax"></canvas></div></div>
+  </section>
+
+  <!-- MÓDULOS PLAN -->
+  <section class="page-section" id="p-modulos">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Detalle por módulo</p><h1 class="page-title">Podio de cada módulo evaluado</h1><p class="page-sub">Top 3 jugadores por puntaje</p></div>
+    <div class="mod-grid-5" id="p-modPodios"></div>
+    <div class="sec">Ranking detallado por módulo</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;" id="p-modTabBtns"></div>
+    <div class="table-card">
+      <div class="table-head navy"><h3 id="p-modRankTitle">Ranking</h3><span id="p-modRankSub"></span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Jugador</th><th>Puntaje</th><th>Aciertos</th><th>Errores</th></tr></thead><tbody id="p-modRankTbl"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- PODIO PLAN -->
+  <section class="page-section" id="p-podio">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Podio general</p><h1 class="page-title">Campeones de la capacitación</h1><p class="page-sub">Jugadores con rank 1 en algún módulo</p></div>
+    <div class="podio-card">
+      <div class="gen-podium">
+        <div class="gen-pl"><p class="gen-name">femoran</p><p class="gen-score">8,470 pts</p><p class="gen-detail">1.º en Módulo 3<br>Prom. 8,470 pts</p><div class="gen-medal silver">2</div><div class="gen-bar gb2"></div></div>
+        <div class="gen-pl"><span class="pill-gold">🥇 3 oros · Campeón</span><p class="gen-name">cdalmeida</p><p class="gen-score">9,748 pts</p><p class="gen-detail">1.º en Mód. 2, 4 y 5<br>Prom. 9,362 pts</p><div class="gen-medal gold">1</div><div class="gen-bar gb1"></div></div>
+        <div class="gen-pl"><p class="gen-name">echiluiza</p><p class="gen-score">8,777 pts</p><p class="gen-detail">1.º en Módulo 1<br>Prom. 8,777 pts</p><div class="gen-medal bronze">3</div><div class="gen-bar gb3"></div></div>
+      </div>
+      <p style="font-size:10px;color:var(--text3);margin-top:14px;border-top:1px solid var(--gray-bd);padding-top:10px;">Criterio: rank 1 en al menos un módulo · desempate por puntaje más alto</p>
+    </div>
+    <div class="sec">Todos los primeros lugares</div>
+    <div class="table-card">
+      <div class="table-head navy"><h3>Ganadores por módulo</h3><span>Rank 1 · Total score</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Módulo</th><th>Jugador</th><th>Puntaje</th><th>Correctas</th><th>Incorrectas</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>Módulo 1 — Planificación</td><td class="player-name">echiluiza</td><td><strong>8,777</strong></td><td><span class="badge b-blue">9/10</span></td><td><span class="badge b-red">1 error</span></td><td style="font-size:11px;color:var(--text3)">Ganó con 1 error</td></tr>
+        <tr><td>Módulo 2 — Gestión de productos</td><td class="player-name">cdalmeida</td><td><strong>8,637</strong></td><td><span class="badge b-blue">9/10</span></td><td><span class="badge b-red">1 error</span></td><td style="font-size:11px;color:var(--text3)">Ganó con 1 error</td></tr>
+        <tr><td>Módulo 3 — Act. complementarias</td><td class="player-name">femoran</td><td><strong>8,470</strong></td><td><span class="badge b-blue">9/10</span></td><td><span class="badge b-red">1 error</span></td><td style="font-size:11px;color:var(--text3)">Ganó con 1 error</td></tr>
+        <tr style="background:#f6fef9"><td>Módulo 4 — Planif./Proyectos</td><td class="player-name">cdalmeida</td><td><strong>9,748</strong></td><td><span class="badge b-green">10/10</span></td><td><span class="badge b-green">0 errores</span></td><td style="font-size:11px;color:var(--green);font-weight:600">✓ Puntaje perfecto</td></tr>
+        <tr style="background:#f6fef9"><td>Módulo 5 — Ingresos/Tercerz.</td><td class="player-name">cdalmeida</td><td><strong>9,702</strong></td><td><span class="badge b-green">10/10</span></td><td><span class="badge b-green">0 errores</span></td><td style="font-size:11px;color:var(--green);font-weight:600">✓ Puntaje perfecto</td></tr>
+      </tbody></table></div>
+      <p style="font-size:10px;color:var(--text3);padding:10px 16px;border-top:1px solid var(--gray-bd);">Nota: el puntaje varía aunque las respuestas sean iguales porque Kahoot penaliza el tiempo de respuesta.</p>
+    </div>
+  </section>
+
+  <!-- TOP10 PLAN -->
+  <section class="page-section" id="p-top10">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Top 10 jugadores</p><h1 class="page-title">Mejor rendimiento global</h1><p class="page-sub">Promedio de puntaje · mínimo 2 módulos</p></div>
+    <div class="filter-bar">
+      <div class="filter-group"><span class="filter-label">Jugador</span><select id="p-fJugador"><option value="">Todos los jugadores</option></select></div>
+      <div class="filter-group"><span class="filter-label">Módulo</span>
+        <select id="p-fMod"><option value="">Todos</option><option value="0">Módulo 1 — Planificación</option><option value="1">Módulo 2 — Gest. Productos</option><option value="2">Módulo 3 — Act. Complement.</option><option value="3">Módulo 4 — Planif./Proyectos</option><option value="4">Módulo 5 — Ingresos/Tercerz.</option></select>
+      </div>
+      <div class="filter-group"><span class="filter-label">Estado</span>
+        <select id="p-fEstado"><option value="">Todos</option><option value="excelente">Excelente</option><option value="bueno">Bueno</option><option value="regular">Regular</option><option value="critico">Crítico</option><option value="refuerzo">Refuerzo</option></select>
+      </div>
+      <div class="filter-group"><span class="filter-label">Nivel</span>
+        <select id="p-fNivel"><option value="">Todos</option><option value="10">10/10</option><option value="9">9/10</option><option value="8">8/10</option><option value="7">7/10</option><option value="lte6">≤6/10</option></select>
+      </div>
+      <button class="filter-reset" onclick="pResetFilters()">↺ Limpiar</button>
+      <div class="filter-count" id="p-filterCount"></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head navy" style="gap:12px;">
+        <h3>🏆 Top 10 — Planificación</h3>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span id="p-tableSubtitle" style="color:rgba(255,255,255,.6);font-size:11px;"></span>
+          <button id="p-btnVerTodos" onclick="pToggleVerTodos()" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">Ver todos</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr>
+        <th onclick="pSortTable('rank')">#<span id="p-si-rank"> ↕</span></th>
+        <th onclick="pSortTable('name')">Jugador<span id="p-si-name"> ↕</span></th>
+        <th onclick="pSortTable('mods')">Módulos<span id="p-si-mods"> ↕</span></th>
+        <th onclick="pSortTable('score')">Prom. puntaje<span id="p-si-score"> ↓</span></th>
+        <th onclick="pSortTable('correct')">Prom. aciertos<span id="p-si-correct"> ↕</span></th>
+        <th onclick="pSortTable('golds')">Oros<span id="p-si-golds"> ↕</span></th>
+        <th>Estado</th><th>Nivel</th>
+      </tr></thead><tbody id="p-mainTbl"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- REFUERZO PLAN -->
+  <section class="page-section" id="p-refuerzo">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Oportunidades de mejora</p><h1 class="page-title">Jugadores que necesitan refuerzo</h1><p class="page-sub">≤6 aciertos en al menos un módulo</p></div>
     <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
-      <div class="kpi" style="border-top:3px solid var(--red);">
-        <div class="kpi-icon">🔴</div>
-        <div class="kpi-label">Estado crítico</div>
-        <div class="kpi-val" id="kCritico">—</div>
-        <div class="kpi-sub">≤4 aciertos</div>
-      </div>
-      <div class="kpi" style="border-top:3px solid var(--amber);">
-        <div class="kpi-icon">🟡</div>
-        <div class="kpi-label">Necesitan refuerzo</div>
-        <div class="kpi-val" id="kRefuerzo">—</div>
-        <div class="kpi-sub">5–6 aciertos</div>
-      </div>
-      <div class="kpi blue">
-        <div class="kpi-icon">📌</div>
-        <div class="kpi-label">Módulo más débil</div>
-        <div class="kpi-val" id="kModDebil">—</div>
-        <div class="kpi-sub" id="kModDebilSub">—</div>
-      </div>
+      <div class="kpi" style="border-top:3px solid var(--red);"><div class="kpi-icon">🔴</div><div class="kpi-label">Estado crítico</div><div class="kpi-val" id="p-kCritico">—</div><div class="kpi-sub">≤4 aciertos</div></div>
+      <div class="kpi" style="border-top:3px solid var(--amber);"><div class="kpi-icon">🟡</div><div class="kpi-label">Necesitan refuerzo</div><div class="kpi-val" id="p-kRefuerzo">—</div><div class="kpi-sub">5–6 aciertos</div></div>
+      <div class="kpi blue"><div class="kpi-icon">📌</div><div class="kpi-label">Módulo más débil</div><div class="kpi-val" id="p-kModDebil">—</div><div class="kpi-sub" id="p-kModDebilSub">—</div></div>
     </div>
     <div class="table-card">
       <div class="table-head red"><h3>Listado de jugadores por reforzar</h3><span>Módulo más débil por jugador</span></div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr>
-            <th>Jugador</th><th>Módulo más débil</th><th>Aciertos</th><th>Puntaje</th><th>Estado</th>
-          </tr></thead>
-          <tbody id="weakTbl"></tbody>
-        </table>
-      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>Jugador</th><th>Módulo más débil</th><th>Aciertos</th><th>Puntaje</th><th>Estado</th></tr></thead><tbody id="p-weakTbl"></tbody></table></div>
     </div>
   </section>
 
-</main>
+</div><!-- fin mc-planificacion -->
 
-<footer class="footer">
-  Proyectos e Implementación · Proyectos Corporativos · Dashboard Evaluaciones Kahoot · PEI Corp 2026
-</footer>
+
+<!-- ════════════ MÓDULO 02: IMPLEMENTACIÓN ════════════ -->
+<div class="mod-content" id="mc-implementacion">
+
+  <!-- ANÁLISIS IMP -->
+  <section class="page-section active" id="i-analisis">
+    <div class="mod-banner">
+      <span class="mod-banner-tag">Módulo activo</span>
+      <span style="width:1px;height:16px;background:var(--blue);opacity:.3"></span>
+      <span class="mod-banner-name">02 · Implementación</span>
+      <span class="mod-banner-hint">4 submódulos evaluados</span>
+    </div>
+    <div style="margin-bottom:20px;">
+      <p class="page-eyebrow">Dashboard Ejecutivo · Análisis</p>
+      <h1 class="page-title">Resultados de Evaluación Kahoot — Implementación</h1>
+      <p class="page-sub">Análisis consolidado de 4 submódulos · Final Scores · PEI Corp</p>
+    </div>
+    <div class="kpi-row" style="margin-bottom:20px;">
+      <div class="kpi blue"><div class="kpi-icon">📋</div><div class="kpi-label">Módulos evaluados</div><div class="kpi-val">4</div><div class="kpi-sub">Implementación</div></div>
+      <div class="kpi blue"><div class="kpi-icon">👥</div><div class="kpi-label">Participantes</div><div class="kpi-val" id="i-kUniq">—</div><div class="kpi-sub">Jugadores activos</div></div>
+      <div class="kpi accent"><div class="kpi-icon">📊</div><div class="kpi-label">Prom. puntaje</div><div class="kpi-val" id="i-kAvg">—</div><div class="kpi-sub">De 10,000 puntos máx.</div></div>
+      <div class="kpi blue"><div class="kpi-icon">✅</div><div class="kpi-label">Tasa de aciertos</div><div class="kpi-val" id="i-kAcc">—</div><div class="kpi-sub">Respuestas correctas</div></div>
+      <div class="kpi accent"><div class="kpi-icon">🏆</div><div class="kpi-label">Puntaje máximo</div><div class="kpi-val" id="i-kMax">—</div><div class="kpi-sub" id="i-kMaxSub">—</div></div>
+    </div>
+    <div class="sec">Análisis de resultados</div>
+    <div class="charts-2">
+      <div class="chart-card"><div class="chart-title">Promedio de puntaje por módulo</div><div class="chart-wrap" style="height:230px"><canvas id="i-cMod"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Correctas vs. incorrectas</div><div class="chart-wrap" style="height:190px"><canvas id="i-cPie"></canvas></div>
+        <div class="pie-legend"><span><span class="leg-sq" style="background:#1a73c8"></span>Correctas</span><span><span class="leg-sq" style="background:#c0392b"></span>Incorrectas</span></div>
+      </div>
+    </div>
+    <div class="sec">Aciertos por módulo (promedio del grupo)</div>
+    <div class="chart-card"><div class="chart-title">Promedio de aciertos por módulo</div><div class="chart-wrap" style="height:230px"><canvas id="i-cAciertos"></canvas></div></div>
+    <div class="sec">Puntaje máximo por módulo</div>
+    <div class="chart-card"><div class="chart-title">Mejor resultado en cada módulo — jugador y puntaje</div><div class="chart-wrap" style="height:260px"><canvas id="i-cMax"></canvas></div></div>
+  </section>
+
+  <!-- MÓDULOS IMP -->
+  <section class="page-section" id="i-modulos">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Detalle por módulo</p><h1 class="page-title">Podio de cada módulo evaluado</h1><p class="page-sub">Top 3 jugadores por puntaje</p></div>
+    <div class="mod-grid-4" id="i-modPodios"></div>
+    <div class="sec">Ranking detallado por módulo</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;" id="i-modTabBtns"></div>
+    <div class="table-card">
+      <div class="table-head navy"><h3 id="i-modRankTitle">Ranking</h3><span id="i-modRankSub"></span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Jugador</th><th>Puntaje</th><th>Aciertos</th><th>Errores</th></tr></thead><tbody id="i-modRankTbl"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- PODIO IMP -->
+  <section class="page-section" id="i-podio">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Podio general</p><h1 class="page-title">Campeones de la capacitación</h1><p class="page-sub">Jugadores con rank 1 en algún módulo</p></div>
+    <div class="podio-card" id="i-genPodioWrap"></div>
+    <div class="sec">Todos los primeros lugares</div>
+    <div class="table-card">
+      <div class="table-head navy"><h3>Ganadores por módulo</h3><span>Rank 1 · Total score</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Módulo</th><th>Jugador</th><th>Puntaje</th><th>Correctas</th><th>Incorrectas</th><th>Resultado</th></tr></thead><tbody id="i-ganTbl"></tbody></table></div>
+      <p style="font-size:10px;color:var(--text3);padding:10px 16px;border-top:1px solid var(--gray-bd);">Nota: el puntaje varía porque Kahoot penaliza el tiempo de respuesta.</p>
+    </div>
+  </section>
+
+  <!-- TOP10 IMP -->
+  <section class="page-section" id="i-top10">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Top 10 jugadores</p><h1 class="page-title">Mejor rendimiento global</h1><p class="page-sub">Promedio de puntaje · mínimo 2 módulos</p></div>
+    <div class="filter-bar">
+      <div class="filter-group"><span class="filter-label">Jugador</span><select id="i-fJugador"><option value="">Todos los jugadores</option></select></div>
+      <div class="filter-group"><span class="filter-label">Módulo</span>
+        <select id="i-fMod"><option value="">Todos</option><option value="0">Módulo 1 — INSP 30%</option><option value="1">Módulo 2 — GS</option><option value="2">Módulo 3 — Privados</option><option value="3">Módulo 4 — Públicos</option></select>
+      </div>
+      <div class="filter-group"><span class="filter-label">Estado</span>
+        <select id="i-fEstado"><option value="">Todos</option><option value="excelente">Excelente</option><option value="bueno">Bueno</option><option value="regular">Regular</option><option value="critico">Crítico</option><option value="refuerzo">Refuerzo</option></select>
+      </div>
+      <div class="filter-group"><span class="filter-label">Nivel</span>
+        <select id="i-fNivel"><option value="">Todos</option><option value="10">10/10</option><option value="9">9/10</option><option value="8">8/10</option><option value="7">7/10</option><option value="lte6">≤6/10</option></select>
+      </div>
+      <button class="filter-reset" onclick="iResetFilters()">↺ Limpiar</button>
+      <div class="filter-count" id="i-filterCount"></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head navy" style="gap:12px;">
+        <h3>🏆 Top 10 — Implementación</h3>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span id="i-tableSubtitle" style="color:rgba(255,255,255,.6);font-size:11px;"></span>
+          <button id="i-btnVerTodos" onclick="iToggleVerTodos()" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">Ver todos</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr>
+        <th onclick="iSortTable('rank')">#<span id="i-si-rank"> ↕</span></th>
+        <th onclick="iSortTable('name')">Jugador<span id="i-si-name"> ↕</span></th>
+        <th onclick="iSortTable('mods')">Módulos<span id="i-si-mods"> ↕</span></th>
+        <th onclick="iSortTable('score')">Prom. puntaje<span id="i-si-score"> ↓</span></th>
+        <th onclick="iSortTable('correct')">Prom. aciertos<span id="i-si-correct"> ↕</span></th>
+        <th onclick="iSortTable('golds')">Oros<span id="i-si-golds"> ↕</span></th>
+        <th>Estado</th><th>Nivel</th>
+      </tr></thead><tbody id="i-mainTbl"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- REFUERZO IMP -->
+  <section class="page-section" id="i-refuerzo">
+    <div style="margin-bottom:20px;"><p class="page-eyebrow">Oportunidades de mejora</p><h1 class="page-title">Jugadores que necesitan refuerzo</h1><p class="page-sub">≤6 aciertos en al menos un módulo</p></div>
+    <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+      <div class="kpi" style="border-top:3px solid var(--red);"><div class="kpi-icon">🔴</div><div class="kpi-label">Estado crítico</div><div class="kpi-val" id="i-kCritico">—</div><div class="kpi-sub">≤4 aciertos</div></div>
+      <div class="kpi" style="border-top:3px solid var(--amber);"><div class="kpi-icon">🟡</div><div class="kpi-label">Necesitan refuerzo</div><div class="kpi-val" id="i-kRefuerzo">—</div><div class="kpi-sub">5–6 aciertos</div></div>
+      <div class="kpi blue"><div class="kpi-icon">📌</div><div class="kpi-label">Módulo más débil</div><div class="kpi-val" id="i-kModDebil">—</div><div class="kpi-sub" id="i-kModDebilSub">—</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-head red"><h3>Listado de jugadores por reforzar</h3><span>Módulo más débil por jugador</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Jugador</th><th>Módulo más débil</th><th>Aciertos</th><th>Puntaje</th><th>Estado</th></tr></thead><tbody id="i-weakTbl"></tbody></table></div>
+    </div>
+  </section>
+
+</div><!-- fin mc-implementacion -->
+
+</main>
+<footer class="footer">Proyectos e Implementación · Proyectos Corporativos · Dashboard Evaluaciones Kahoot · PEI Corp 2026</footer>
 
 <script>
 // ════════════════════════════════
-// DATOS
+// NAV GLOBAL
 // ════════════════════════════════
-const MODS_NAMES = ['Planificación','Gest. Productos','Act. Complement.','Planif./Proyectos','Ingresos/Tercerz.'];
-const RAW = [
-  { mod:0, rows:[
-    ['echiluiza',8777,9,1],['raacosta',8544,9,1],['durbano',8442,9,1],['klmartinez',8433,9,1],
-    ['wsalazar',8432,9,1],['lgaibor',8426,9,1],['sagarcia',8339,9,1],['pluna',8291,9,1],
-    ['abguallpa',7975,9,1],['ansanchez',7709,8,2],['cdalmeida',7638,8,2],['jkleon',7605,8,2],
-    ['sortiz',7597,8,2],['morozco',7534,8,2],['jcamalle',7329,8,2],['cralarcon',7231,8,2],
-    ['mspalma',6994,8,2],['aonate',6987,8,2],['kremache',6761,8,2],['kcorrea',6709,7,3],
-    ['mvaldez',6291,7,3],['dagallardo',6275,7,3],['vcruz',6185,7,3],['sbaque',6059,7,3],
-    ['jkguaman',5713,6,4],['mamartinezv',5669,6,4],['ealopezt',5668,7,3],['dvera',5665,6,4],
-    ['erchoez',5528,6,4],['jlcastillot',5269,6,4],['aarroyo',5172,6,4],['amguzman',4580,5,5],
-    ['wgaona',4317,5,5],['dcoronel',4184,5,5],['bsangolqui',3776,4,6],['vtacuri',3678,4,6],
-    ['aavellan',3652,4,6],['esrivera',3430,4,6]
-  ]},
-  { mod:1, rows:[
-    ['cdalmeida',8637,9,1],['dvera',8089,9,1],['cralarcon',7919,9,1],['aavellan',7429,8,2],
-    ['lgaibor',7373,8,2],['erchoez',7365,8,2],['dcoronel',7201,8,2],['durbano',7149,8,2],
-    ['morozco',7038,8,2],['kcorrea',6702,7,3],['abguallpa',6565,7,3],['vcruz',6508,7,3],
-    ['dagallardo',6493,7,3],['raacosta',6471,7,3],['bsangolqui',6433,7,3],['jlcastillot',6429,7,3],
-    ['jkguaman',6107,7,3],['vcarrillo',6020,7,3],['ansanchez',5901,7,3],['jkleon',5823,6,4],
-    ['sortiz',5775,6,4],['jcamalle',5739,6,4],['echiluiza',5699,6,4],['femoran',5699,6,4],
-    ['ealopezt',5486,7,3],['amguzman',5230,7,3],['sbaque',5172,6,4],['aarroyo',5132,7,3],
-    ['kremache',5059,6,4],['aonate',5020,6,4],['mvaldez',4637,6,4],['klmartinez',4560,5,5],
-    ['esrivera',4225,6,4],['clhidalgo',4174,5,5],['wgaona',4127,5,5],['pluna',3949,5,5],
-    ['wsalazar',3741,4,6],['vtacuri',3544,4,6],['mspalma',2553,3,7],['mamartinezv',990,1,9]
-  ]},
-  { mod:2, rows:[
-    ['femoran',8470,9,1],['sortiz',8382,9,1],['cralarcon',8125,9,1],['jkleon',7738,8,2],
-    ['lgaibor',7722,8,2],['echiluiza',7674,8,2],['dagallardo',7615,8,2],['wsalazar',7386,8,2],
-    ['vcarrillo',6973,8,2],['kremache',6844,8,2],['cdalmeida',6802,7,3],['raacosta',6655,7,3],
-    ['jcamalle',6654,7,3],['aonate',6379,8,2],['klmartinez',6271,7,3],['mvaldez',6257,7,3],
-    ['sagarcia',6225,7,3],['vcruz',6074,7,3],['abguallpa',6031,7,3],['bsangolqui',5958,7,3],
-    ['clhidalgo',5908,7,3],['erchoez',5867,7,3],['wgaona',5843,7,3],['ealopezt',5842,7,3],
-    ['aarroyo',5791,7,3],['mamartinezv',5637,6,4],['dvera',5545,6,4],['durbano',5518,6,4],
-    ['pluna',5474,7,3],['kcorrea',5453,6,4],['jlcastillot',5357,7,3],['ansanchez',5334,6,4],
-    ['dcoronel',5279,6,4],['amguzman',5167,6,4],['esrivera',4853,6,4],['vtacuri',4667,6,4],
-    ['mspalma',4554,5,5],['jkguaman',4395,5,5],['morozco',3848,4,6],['aavellan',3590,4,6]
-  ]},
-  { mod:3, rows:[
-    ['cdalmeida',9748,10,0],['kcorrea',9704,10,0],['dagallardo',9678,10,0],['wsalazar',9571,10,0],
-    ['vcarrillo',9514,10,0],['sortiz',9512,10,0],['jkguaman',9478,10,0],['dvera',9367,10,0],
-    ['ansanchez',9259,10,0],['bsangolqui',9246,10,0],['abguallpa',9082,10,0],['mspalma',8947,10,0],
-    ['clhidalgo',8837,10,0],['jcamalle',8571,9,1],['sagarcia',8566,10,0],['jalbarracin',8559,9,1],
-    ['lgaibor',8537,9,1],['femoran',8499,9,1],['pluna',8477,9,1],['dcoronel',8429,9,1],
-    ['vcruz',8335,9,1],['wgaona',7909,9,1],['jlcastillot',7861,10,0],['esrivera',7806,9,1],
-    ['raacosta',7681,8,2],['morozco',7636,8,2],['durbano',7488,8,2],['mvaldez',7294,8,2],
-    ['erchoez',7250,8,2],['sbaque',7083,8,2],['aarroyo',7054,9,1],['aonate',7009,9,1],
-    ['vtacuri',6795,8,2],['jkleon',6756,7,3],['ealopezt',6072,7,3],['aavellan',5762,6,4],
-    ['klmartinez',5484,6,4],['cralarcon',5393,6,4],['amguzman',5356,6,4],['mamartinezv',4866,5,5],
-    ['kremache',3741,4,6]
-  ]},
-  { mod:4, rows:[
-    ['cdalmeida',9702,10,0],['ealopezt',9470,10,0],['abguallpa',9279,10,0],['femoran',9118,10,0],
-    ['sortiz',9116,10,0],['bsangolqui',9037,10,0],['aonate',8983,10,0],['dvera',8740,10,0],
-    ['jkguaman',8625,9,1],['ggavilanez',8558,9,1],['jcamalle',8548,9,1],['jkleon',8455,9,1],
-    ['sagarcia',8440,9,1],['cralarcon',8239,9,1],['mvaldez',8158,9,1],['kremache',7881,9,1],
-    ['vcarrillo',7754,9,1],['durbano',7697,9,1],['morozco',7679,9,1],['aarroyo',7673,10,0],
-    ['echiluiza',7617,8,2],['mamartinezv',7590,8,2],['kcorrea',7580,8,2],['erchoez',7422,8,2],
-    ['klmartinez',7359,8,2],['lgaibor',7318,8,2],['amguzman',7288,8,2],['wsalazar',7108,8,2],
-    ['ansanchez',7063,8,2],['esrivera',7045,8,2],['clhidalgo',6810,9,1],['pluna',6682,8,2],
-    ['wgaona',6342,8,2],['jlcastillot',5979,8,2],['sbaque',5945,8,2],['jalbarracin',5530,6,4],
-    ['mspalma',5345,7,3],['vtacuri',4857,6,4],['aavellan',3670,4,6],['raacosta',0,0,10]
-  ]}
-];
+const SUBNAVS = {
+  global:         ['analisis','podio','refuerzo'],
+  planificacion:  ['analisis','modulos','podio','top10','refuerzo'],
+  implementacion: ['analisis','modulos','podio','top10','refuerzo']
+};
+const SUBNAV_LABELS = {analisis:'Análisis',modulos:'Módulos',podio:'Podio general',top10:'Top 10',refuerzo:'Refuerzo'};
+let activeMod = 'global';
 
-// ════════════════════════════════
-// CONSTRUIR MAPA DE JUGADORES
-// ════════════════════════════════
-const nrm = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
-const map = {};
-RAW.forEach(({mod,rows}) => {
-  rows.forEach(([p,score,correct,incorrect]) => {
-    if (score === 0) return;
-    const k = nrm(p);
-    if (!map[k]) map[k] = {name:p, mods:{}, golds:0};
-    if (!map[k].mods[mod] || score > map[k].mods[mod].score)
-      map[k].mods[mod] = {score, correct, incorrect, mod};
+function buildSubnav(mod){
+  const nav = document.getElementById('subnav');
+  nav.innerHTML = '';
+  SUBNAVS[mod].forEach((sec,i) => {
+    const a = document.createElement('a');
+    a.textContent = SUBNAV_LABELS[sec];
+    a.id = 'tab-'+sec;
+    if(i===0) a.classList.add('active');
+    a.onclick = () => showSection(mod, sec);
+    nav.appendChild(a);
   });
-});
-RAW.forEach(({rows}) => {
-  const k = nrm(rows[0][0]);
-  if (map[k]) map[k].golds += 1;
-});
-
-const allPlayers = Object.values(map).map(p => {
-  const ms = Object.values(p.mods);
-  const avgScore   = Math.round(ms.reduce((a,m)=>a+m.score,0)/ms.length);
-  const avgCorrect = +(ms.reduce((a,m)=>a+m.correct,0)/ms.length).toFixed(1);
-  const minCorrect = Math.min(...ms.map(m=>m.correct));
-  const maxScore   = Math.max(...ms.map(m=>m.score));
-  const pct        = Math.round(avgCorrect*10);
-  let estado, estadoKey;
-  if      (pct>=90)          { estado='<span class="badge b-green">Excelente</span>';  estadoKey='excelente'; }
-  else if (pct>=80)          { estado='<span class="badge b-blue">Bueno</span>';        estadoKey='bueno'; }
-  else if (pct>=70)          { estado='<span class="badge b-amber">Regular</span>';     estadoKey='regular'; }
-  else if (minCorrect<=4)    { estado='<span class="badge b-red">Crítico</span>';       estadoKey='critico'; }
-  else                       { estado='<span class="badge b-amber">Refuerzo</span>';   estadoKey='refuerzo'; }
-  const nivelKey   = avgCorrect>=10?'10':avgCorrect>=9?'9':avgCorrect>=8?'8':avgCorrect>=7?'7':'lte6';
-  const nivelLabel = avgCorrect>=10?'<span class="badge b-green">10/10</span>':avgCorrect>=9?'<span class="badge b-blue">9/10</span>':avgCorrect>=8?'<span class="badge b-blue">8/10</span>':avgCorrect>=7?'<span class="badge b-amber">7/10</span>':'<span class="badge b-red">≤6/10</span>';
-  const goldBadge  = p.golds>0 ? `<span class="badge b-orange">${p.golds} oro${p.golds>1?'s':''}</span>` : '<span style="color:#b0b8c8">—</span>';
-  const minModKey  = Object.entries(p.mods).sort((a,b)=>a[1].correct-b[1].correct)[0];
-  return {...p, avgScore, avgCorrect, minCorrect, maxScore, modCount:ms.length, pct, estado, estadoKey, nivelKey, nivelLabel, goldBadge, minModKey};
-});
-
-// ════════════════════════════════
-// SECCIÓN NAVEGACIÓN
-// ════════════════════════════════
-const SECTIONS = ['analisis','modulos','podio','top10','refuerzo'];
-let currentSection = 'analisis';
-let chartsBuilt = {};
-
-function showSection(id) {
-  SECTIONS.forEach(s => {
-    document.getElementById('sec-'+s).classList.toggle('active', s===id);
-    document.getElementById('tab-'+s).classList.toggle('active', s===id);
-  });
-  currentSection = id;
-  if (!chartsBuilt[id]) { buildSectionCharts(id); chartsBuilt[id]=true; }
-  if (id==='top10') renderTable();
-  if (id==='refuerzo') renderRefuerzo();
-  if (id==='modulos') renderModuloRanking(activeModIdx);
 }
 
-function selectMod(btn, id) {
-  if (btn.classList.contains('disabled')) return;
+function showSection(mod, sec){
+  SUBNAVS[mod].forEach(s => {
+    const el = document.getElementById(mod[0]+'-'+s);
+    if(el) el.classList.toggle('active', s===sec);
+    const tab = document.getElementById('tab-'+s);
+    if(tab) tab.classList.toggle('active', s===sec);
+  });
+  if(mod==='global'){
+    if(sec==='podio') gRenderPodio();
+    if(sec==='refuerzo') gRenderRefuerzo();
+  } else if(mod==='planificacion'){
+    if(sec==='top10') pRenderTable();
+    if(sec==='refuerzo') pRenderRefuerzo();
+    if(sec==='modulos') pRenderModuloRanking(pActiveModIdx);
+  } else {
+    if(sec==='top10') iRenderTable();
+    if(sec==='refuerzo') iRenderRefuerzo();
+    if(sec==='modulos') iRenderModuloRanking(iActiveModIdx);
+    if(sec==='podio') iRenderPodio();
+  }
+}
+
+function switchModulo(mod, btn){
+  if(btn.classList.contains('disabled')) return;
   document.querySelectorAll('.mod-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
+  document.querySelectorAll('.mod-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('mc-'+mod).classList.add('active');
+  activeMod = mod;
+  buildSubnav(mod);
+  SUBNAVS[mod].forEach(s=>{
+    const el=document.getElementById(mod[0]+'-'+s);
+    if(el) el.classList.toggle('active', s==='analisis');
+  });
+  if(mod==='implementacion' && !iChartsBuilt){ iChartsBuilt=true; iBuildCharts(); }
 }
 
-// ════════════════════════════════
-// SECCIÓN: RESUMEN — KPIs
-// ════════════════════════════════
-(function buildResumen(){
-  const active = allPlayers.filter(p=>p.modCount>=1);
-  const uniq = active.length;
-  const avg  = Math.round(active.reduce((a,p)=>a+p.avgScore,0)/active.length);
-  let tc=0,ta=0; active.forEach(p=>Object.values(p.mods).forEach(m=>{tc+=m.correct;ta+=m.correct+m.incorrect;}));
-  const acc = Math.round(tc/ta*100)+'%';
-  document.getElementById('kUniqA').textContent = uniq;
-  document.getElementById('kAvgA').textContent  = avg.toLocaleString();
-  document.getElementById('kAccA').textContent  = acc;
-})();
+buildSubnav('global');
 
 // ════════════════════════════════
-// HELPERS CHART
+// HELPERS COMPARTIDOS
 // ════════════════════════════════
-const modAvgs = RAW.map(({rows})=>{const v=rows.filter(r=>r[1]>0);return Math.round(v.reduce((a,r)=>a+r[1],0)/v.length);});
-const modAciertoAvg = RAW.map(({rows})=>{const v=rows.filter(r=>r[1]>0);return +(v.reduce((a,r)=>a+r[2],0)/v.length).toFixed(1);});
+const nrm = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
 const gMuted='#7a8599', gGrid='#eaeef3';
 
-function makeBuckets(players){
-  // Cuenta jugadores únicos según su promedio de aciertos
-  // (no participaciones por módulo, que inflaría los números)
-  const b=[0,0,0,0,0];
-  players.forEach(p=>{
-    const c = p.avgCorrect;
-    if(c>=10)b[0]++;
-    else if(c>=9)b[1]++;
-    else if(c>=8)b[2]++;
-    else if(c>=7)b[3]++;
-    else b[4]++;
-  });
-  return b;
-}
-function makePct(players){
-  let tc=0,ta=0;
-  players.forEach(p=>Object.values(p.mods).forEach(m=>{tc+=m.correct;ta+=m.correct+m.incorrect;}));
-  return ta>0?Math.round(tc/ta*100):0;
+function labelPlugin(extraCb){
+  return [{id:'lbl',afterDatasetsDraw(chart){
+    const{ctx,data}=chart;
+    data.datasets.forEach((ds,di)=>{
+      chart.getDatasetMeta(di).data.forEach((bar,i)=>{
+        const val=ds.data[i];
+        ctx.save();
+        if(extraCb){ extraCb(ctx,bar,val,i,ds); }
+        else{
+          ctx.font='700 11px Segoe UI,Arial,sans-serif';
+          ctx.fillStyle='#0d1b2e';ctx.textAlign='center';ctx.textBaseline='bottom';
+          ctx.fillText(typeof val==='number'?val.toLocaleString():val, bar.x, bar.y-4);
+        }
+        ctx.restore();
+      });
+    });
+  }}];
 }
 
-function buildBarChart(id,labels,data,colors,maxY){
+function buildBarLbl(id,labels,data,colors,maxY){
   return new Chart(document.getElementById(id),{type:'bar',
-    data:{labels,datasets:[{data,backgroundColor:colors||'#1a73c8',borderRadius:5,borderSkipped:'bottom',barThickness:26}]},
-    options:{responsive:true,maintainAspectRatio:false,
+    data:{labels,datasets:[{data,backgroundColor:colors||'#1a73c8',borderRadius:5,borderSkipped:'bottom',barThickness:30}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:28}},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw.toLocaleString()}}},
       scales:{x:{ticks:{color:gMuted,font:{size:9}},grid:{display:false}},
-              y:{min:0,max:maxY||undefined,ticks:{color:gMuted,font:{size:9},callback:v=>v.toLocaleString()},grid:{color:gGrid},border:{display:false}}}}
-  });
-}
-
-function buildBarChartLabeled(id,labels,data,colors,maxY){
-  return new Chart(document.getElementById(id),{type:'bar',
-    data:{labels,datasets:[{data,backgroundColor:colors||'#1a73c8',borderRadius:5,borderSkipped:'bottom',barThickness:26}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      layout:{padding:{top:24}},
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:c=>' '+c.raw.toLocaleString()}},
-        datalabels:{
-          anchor:'end',align:'end',
-          color:'#0d1b2e',font:{size:10,weight:'700'},
-          formatter:v=>v.toLocaleString()
-        }
-      },
-      scales:{
-        x:{ticks:{color:gMuted,font:{size:9}},grid:{display:false}},
-        y:{min:0,max:maxY||undefined,display:false,grid:{display:false},border:{display:false}}
-      }
-    },
-    plugins:[{
-      id:'dataLabels',
-      afterDatasetsDraw(chart){
-        const{ctx,data,scales:{x,y}}=chart;
-        data.datasets.forEach((ds,di)=>{
-          const meta=chart.getDatasetMeta(di);
-          meta.data.forEach((bar,i)=>{
-            const val=ds.data[i];
-            const label=typeof val==='number'?val.toLocaleString():val;
-            ctx.save();
-            ctx.font='700 10px Segoe UI,Arial,sans-serif';
-            ctx.fillStyle='#0d1b2e';
-            ctx.textAlign='center';
-            ctx.textBaseline='bottom';
-            ctx.fillText(label, bar.x, bar.y-4);
-            ctx.restore();
-          });
-        });
-      }
-    }]
+              y:{min:0,max:maxY||undefined,display:false,grid:{display:false},border:{display:false}}}},
+    plugins:labelPlugin()
   });
 }
 
 function buildDoughnut(id,pct){
   return new Chart(document.getElementById(id),{type:'doughnut',
     data:{labels:['Correctas','Incorrectas'],datasets:[{data:[pct,100-pct],backgroundColor:['#1a73c8','#c0392b'],borderWidth:0,hoverOffset:4}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}}},
-    plugins:[{
-      id:'doughnutCenter',
-      afterDraw(chart){
-        const{ctx,chartArea:{left,right,top,bottom}}=chart;
-        const cx=(left+right)/2, cy=(top+bottom)/2;
-        ctx.save();
-        ctx.font='700 28px Segoe UI,Arial,sans-serif';
-        ctx.fillStyle='#0d1b2e';
-        ctx.textAlign='center';
-        ctx.textBaseline='middle';
-        ctx.fillText(pct+'%', cx, cy-8);
-        ctx.font='400 11px Segoe UI,Arial,sans-serif';
-        ctx.fillStyle='#7a8599';
-        ctx.fillText('correctas', cx, cy+14);
-        ctx.restore();
-      }
-    }]
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}}},
+    plugins:[{id:'dc',afterDraw(chart){
+      const{ctx,chartArea:{left,right,top,bottom}}=chart;
+      const cx=(left+right)/2,cy=(top+bottom)/2;
+      ctx.save();ctx.font='700 26px Segoe UI,Arial,sans-serif';ctx.fillStyle='#0d1b2e';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(pct+'%',cx,cy-8);ctx.font='400 11px Segoe UI,Arial,sans-serif';ctx.fillStyle='#7a8599';ctx.fillText('correctas',cx,cy+12);ctx.restore();
+    }}]
   });
 }
 
-function buildSectionCharts(id){
-  const players = allPlayers.filter(p=>p.modCount>=1);
-  const buckets = makeBuckets(players);
-  const pct     = makePct(players);
-  if(id==='analisis'){
-    buildBarChartLabeled('cModA', MODS_NAMES, modAvgs, '#1a73c8', 10000);
-    buildDoughnut('cPieA', pct);
-    buildBarChartLabeled('cAciertosA', MODS_NAMES, modAciertoAvg, '#5b2d8e', 10);
-  }
-}
-
-// Iniciar gráficos de análisis al cargar
-chartsBuilt['analisis'] = true;
-buildSectionCharts('analisis');
-
-// ── Gráfico puntaje máximo por módulo ──
-(function buildMaxScoreChart(){
-  const modShort = ['Mód. 1\nPlanificación','Mód. 2\nGest. Productos','Mód. 3\nAct. Complement.','Mód. 4\nPlanif./Proyectos','Mód. 5\nIngresos/Tercerz.'];
-  const scores  = [];
-  const players = [];
-  const colors  = [];
-  const PALETTE = ['#1a73c8','#5b2d8e','#1b7a3e','#f5a623','#c0392b'];
-
-  RAW.forEach(({mod, rows}) => {
-    const valid = rows.filter(r => r[1] > 0);
-    if (!valid.length) return;
-    const [name, score, correct] = valid[0];
-    scores.push(score);
-    players.push(name);
-    colors.push(correct === 10 ? '#1b7a3e' : PALETTE[mod]);
+function buildMaxChart(id,modNames,rawData){
+  const scores=[],players=[],colors=[];
+  const PALETTE=['#1a73c8','#5b2d8e','#1b7a3e','#f5a623','#c0392b'];
+  rawData.forEach(({mod,rows})=>{
+    const v=rows.filter(r=>r[1]>0);if(!v.length)return;
+    const[name,score,correct]=v[0];
+    scores.push(score);players.push(name);
+    colors.push(correct>=10?'#1b7a3e':PALETTE[mod%PALETTE.length]);
   });
-
-  new Chart(document.getElementById('cMaxA'), {
-    type: 'bar',
-    data: {
-      labels: modShort,
-      datasets: [{
-        data: scores,
-        backgroundColor: colors,
-        borderRadius: 5,
-        borderSkipped: 'bottom',
-        barThickness: 32
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: { padding: { top: 36 } },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: c => ` ${c.raw.toLocaleString()} pts · ${players[c.dataIndex]}`
-          }
-        }
-      },
-      scales: {
-        x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { display: false } },
-        y: { min: 0, max: 10000, display: false, grid: { display: false }, border: { display: false } }
-      }
-    },
-    plugins: [{
-      id: 'maxLabels',
-      afterDatasetsDraw(chart) {
-        const { ctx, data } = chart;
-        data.datasets.forEach((ds, di) => {
-          chart.getDatasetMeta(di).data.forEach((bar, i) => {
-            const val   = ds.data[i];
-            const pname = players[i];
-            ctx.save();
-            // Puntaje
-            ctx.font = '700 13px Segoe UI, Arial, sans-serif';
-            ctx.fillStyle = '#0d1b2e';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(val.toLocaleString(), bar.x, bar.y - 20);
-            // Nombre del jugador
-            ctx.font = '500 11px Segoe UI, Arial, sans-serif';
-            ctx.fillStyle = '#4a5568';
-            ctx.fillText(pname, bar.x, bar.y - 6);
-            ctx.restore();
-          });
+  new Chart(document.getElementById(id),{type:'bar',
+    data:{labels:modNames,datasets:[{data:scores,backgroundColor:colors,borderRadius:5,borderSkipped:'bottom',barThickness:40}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:46}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toLocaleString()} pts · ${players[c.dataIndex]}`}}},
+      scales:{x:{ticks:{color:gMuted,font:{size:10}},grid:{display:false}},y:{min:0,max:10000,display:false,grid:{display:false},border:{display:false}}}},
+    plugins:[{id:'ml',afterDatasetsDraw(chart){
+      const{ctx,data}=chart;
+      data.datasets.forEach((ds,di)=>{
+        chart.getDatasetMeta(di).data.forEach((bar,i)=>{
+          ctx.save();ctx.font='700 13px Segoe UI,Arial,sans-serif';ctx.fillStyle='#0d1b2e';ctx.textAlign='center';ctx.textBaseline='bottom';
+          ctx.fillText(ds.data[i].toLocaleString(),bar.x,bar.y-20);
+          ctx.font='500 11px Segoe UI,Arial,sans-serif';ctx.fillStyle='#4a5568';ctx.fillText(players[i],bar.x,bar.y-6);ctx.restore();
         });
-      }
-    }]
+      });
+    }}]
   });
+}
+
+function buildPlayers(raw){
+  const map={};
+  raw.forEach(({mod,rows})=>{
+    rows.forEach(([p,score,correct,incorrect])=>{
+      if(score===0) return;
+      const k=nrm(p);
+      if(!map[k])map[k]={name:p,mods:{},golds:0};
+      if(!map[k].mods[mod]||score>map[k].mods[mod].score)
+        map[k].mods[mod]={score,correct,incorrect,mod};
+    });
+  });
+  raw.forEach(({rows})=>{const k=nrm(rows[0][0]);if(map[k])map[k].golds+=1;});
+  return Object.values(map).map(p=>{
+    const ms=Object.values(p.mods);
+    const avgScore=Math.round(ms.reduce((a,m)=>a+m.score,0)/ms.length);
+    const avgCorrect=+(ms.reduce((a,m)=>a+m.correct,0)/ms.length).toFixed(1);
+    const minCorrect=Math.min(...ms.map(m=>m.correct));
+    const maxScore=Math.max(...ms.map(m=>m.score));
+    const pct=Math.round(avgCorrect*10);
+    let estado,estadoKey;
+    if(pct>=90){estado='<span class="badge b-green">Excelente</span>';estadoKey='excelente';}
+    else if(pct>=80){estado='<span class="badge b-blue">Bueno</span>';estadoKey='bueno';}
+    else if(pct>=70){estado='<span class="badge b-amber">Regular</span>';estadoKey='regular';}
+    else if(minCorrect<=4){estado='<span class="badge b-red">Crítico</span>';estadoKey='critico';}
+    else{estado='<span class="badge b-amber">Refuerzo</span>';estadoKey='refuerzo';}
+    const nivelKey=avgCorrect>=10?'10':avgCorrect>=9?'9':avgCorrect>=8?'8':avgCorrect>=7?'7':'lte6';
+    const nivelLabel=avgCorrect>=10?'<span class="badge b-green">10/10</span>':avgCorrect>=9?'<span class="badge b-blue">9/10</span>':avgCorrect>=8?'<span class="badge b-blue">8/10</span>':avgCorrect>=7?'<span class="badge b-amber">7/10</span>':'<span class="badge b-red">≤6/10</span>';
+    const goldBadge=p.golds>0?`<span class="badge b-orange">${p.golds} oro${p.golds>1?'s':''}</span>`:'<span style="color:#b0b8c8">—</span>';
+    const minModKey=Object.entries(p.mods).sort((a,b)=>a[1].correct-b[1].correct)[0];
+    return{...p,avgScore,avgCorrect,minCorrect,maxScore,modCount:ms.length,pct,estado,estadoKey,nivelKey,nivelLabel,goldBadge,minModKey};
+  });
+}
+
+function buildTableFuncs(prefix, allPlayers, modNames){
+  let sortKey='score',sortDir=-1,showAll=false,fMod='',fEstado='',fNivel='',fJugador='';
+  const jugSel=document.getElementById(prefix+'fJugador');
+  [...allPlayers].sort((a,b)=>a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+    .forEach(p=>{const o=document.createElement('option');o.value=p.name.toLowerCase();o.textContent=p.name;jugSel.appendChild(o);});
+
+  function getFiltered(){
+    return allPlayers.filter(p=>{
+      if(fJugador!==''&&p.name.toLowerCase()!==fJugador) return false;
+      if(fMod===''){if(p.modCount<2) return false;}else{if(!p.mods[+fMod]) return false;}
+      if(fEstado!==''&&p.estadoKey!==fEstado) return false;
+      if(fNivel!==''){if(fNivel==='lte6'&&p.nivelKey!=='lte6') return false;if(fNivel!=='lte6'&&p.nivelKey!==fNivel) return false;}
+      return true;
+    });
+  }
+  function render(){
+    let players=getFiltered();
+    players.sort((a,b)=>{
+      if(sortKey==='name'){const c=a.name.toLowerCase().localeCompare(b.name.toLowerCase());return sortDir===1?c:-c;}
+      const keys={rank:'avgScore',mods:'modCount',score:'avgScore',correct:'avgCorrect',golds:'golds'};
+      const va=a[keys[sortKey]],vb=b[keys[sortKey]];return sortDir===1?va-vb:vb-va;
+    });
+    const total=players.length;
+    const hayFiltros=[fMod,fEstado,fNivel,fJugador].some(f=>f!=='');
+    const visibles=(!showAll&&!hayFiltros)?players.slice(0,10):players;
+    const actF=[fMod,fEstado,fNivel,fJugador].filter(f=>f!=='').length;
+    document.getElementById(prefix+'filterCount').textContent=actF>0?`${total} jugadores · ${actF} filtro${actF>1?'s':''} activo${actF>1?'s':''}`:showAll?`${total} jugadores`:`Top 10 de ${total} jugadores`;
+    document.getElementById(prefix+'tableSubtitle').textContent=fMod!==''?`Filtrado: ${modNames[+fMod]}`:showAll?'Todos · mín. 2 módulos':'Top 10 · mín. 2 módulos';
+    const btn=document.getElementById(prefix+'btnVerTodos');btn.style.display=hayFiltros?'none':'inline-block';btn.textContent=showAll?'Ver top 10':'Ver todos';
+    const tbody=document.getElementById(prefix+'mainTbl');tbody.innerHTML='';
+    if(!visibles.length){tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div>🔍</div>Sin resultados.</div></td></tr>';return;}
+    visibles.forEach((p,i)=>{
+      let sc,cr;
+      if(fMod!==''&&p.mods[+fMod]){const m=p.mods[+fMod];sc=m.score.toLocaleString();cr=m.correct+'/10';}
+      else{sc=p.avgScore.toLocaleString();cr=p.avgCorrect+'/10';}
+      const rs=i===0?'background:#fffbf0;':i===1?'background:#fafbff;':i===2?'background:#fff8f5;':'';
+      const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span style="color:var(--text3);font-weight:600">${i+1}</span>`;
+      tbody.innerHTML+=`<tr style="${rs}"><td style="font-size:13px;text-align:center;">${rk}</td><td class="player-name">${p.name}</td><td>${p.modCount}</td><td><strong>${sc}</strong></td><td>${cr}</td><td>${p.goldBadge}</td><td>${p.estado}</td><td>${p.nivelLabel}</td></tr>`;
+    });
+    if(!showAll&&!hayFiltros&&total>10)tbody.innerHTML+=`<tr><td colspan="8" style="text-align:center;padding:12px;color:var(--text3);font-size:11px;background:var(--gray-bg);border-top:1px dashed var(--gray-bd);">${total-10} jugadores más · <span onclick="document.getElementById('${prefix}btnVerTodos').click()" style="color:var(--blue);cursor:pointer;font-weight:600;text-decoration:underline;">Ver todos</span></td></tr>`;
+    ['rank','name','mods','score','correct','golds'].forEach(k=>{const el=document.getElementById(prefix+'si-'+k);if(!el)return;el.textContent=k===sortKey?(sortDir===1?' ↑':' ↓'):' ↕';el.parentElement.classList.toggle('sorted',k===sortKey);});
+  }
+  function sort(key){if(sortKey===key)sortDir*=-1;else{sortKey=key;sortDir=-1;}render();}
+  function reset(){fMod='';fEstado='';fNivel='';fJugador='';showAll=false;[prefix+'fMod',prefix+'fEstado',prefix+'fNivel',prefix+'fJugador'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});render();}
+  function toggleAll(){showAll=!showAll;render();}
+  document.getElementById(prefix+'fJugador').addEventListener('change',e=>{fJugador=e.target.value;render();});
+  document.getElementById(prefix+'fMod').addEventListener('change',e=>{fMod=e.target.value;render();});
+  document.getElementById(prefix+'fEstado').addEventListener('change',e=>{fEstado=e.target.value;render();});
+  document.getElementById(prefix+'fNivel').addEventListener('change',e=>{fNivel=e.target.value;render();});
+  return{render,sort,reset,toggleAll};
+}
+
+function buildModuloRankFuncs(prefix, raw, modNames, modNums){
+  let activeIdx=0;
+  const btnCont=document.getElementById(prefix+'modTabBtns');
+  modNames.forEach((name,i)=>{
+    const btn=document.createElement('button');
+    btn.textContent=`${modNums[i]} · ${name}`;
+    btn.style.cssText='padding:6px 14px;border-radius:8px;border:1px solid var(--gray-bd);background:var(--white);color:var(--navy);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;';
+    if(i===0){btn.style.background='var(--navy)';btn.style.color='#fff';btn.style.borderColor='var(--navy)';}
+    btn.onclick=()=>{activeIdx=i;document.querySelectorAll('#'+prefix+'modTabBtns button').forEach((b,bi)=>{b.style.background=bi===i?'var(--navy)':'var(--white)';b.style.color=bi===i?'#fff':'var(--navy)';b.style.borderColor=bi===i?'var(--navy)':'var(--gray-bd)';});render(i);};
+    btnCont.appendChild(btn);
+  });
+  function render(idx){
+    activeIdx=idx;
+    document.getElementById(prefix+'modRankTitle').textContent=`Ranking — ${modNums[idx]} · ${modNames[idx]}`;
+    const rows=raw[idx].rows.filter(r=>r[1]>0);
+    document.getElementById(prefix+'modRankSub').textContent=`${rows.length} participantes`;
+    const tbody=document.getElementById(prefix+'modRankTbl');tbody.innerHTML='';
+    rows.forEach(([name,score,correct,incorrect],i)=>{
+      const badge=correct===10?'<span class="badge b-green">10/10</span>':correct>=9?'<span class="badge b-blue">9/10</span>':correct>=8?'<span class="badge b-blue">8/10</span>':correct>=7?'<span class="badge b-amber">7/10</span>':'<span class="badge b-red">≤6/10</span>';
+      const errBadge=incorrect===0?'<span class="badge b-green">0</span>':`<span class="badge b-red">${incorrect}</span>`;
+      tbody.innerHTML+=`<tr><td style="color:var(--text3);font-weight:600">${i+1}</td><td class="player-name">${name}</td><td><strong>${score.toLocaleString()}</strong></td><td>${badge}</td><td>${errBadge}</td></tr>`;
+    });
+  }
+  render(0);
+  return{render, get activeIdx(){return activeIdx;}};
+}
+
+function buildPodiosFuncs(prefix, raw, modNames, modNums, gridId){
+  const podCont=document.getElementById(gridId);
+  raw.forEach(({mod,rows})=>{
+    const v=rows.filter(r=>r[1]>0);
+    const[p1,p2,p3]=[v[0],v[1],v[2]];
+    podCont.innerHTML+=`<div class="mod-card">
+      <div class="mod-card-num">${modNums[mod]}</div>
+      <div class="mod-card-name">${modNames[mod]}</div>
+      <div class="podium">
+        <div class="pl"><p class="pname">${p2[0]}</p><p class="pscore">${p2[1].toLocaleString()}</p><p class="pcorrect">${p2[2]}/10</p><div class="medal silver">2</div><div class="pbar pb2"></div></div>
+        <div class="pl"><p class="pname">${p1[0]}</p><p class="pscore">${p1[1].toLocaleString()}</p><p class="pcorrect">${p1[2]}/10</p><div class="medal gold">1</div><div class="pbar pb1"></div></div>
+        <div class="pl"><p class="pname">${p3[0]}</p><p class="pscore">${p3[1].toLocaleString()}</p><p class="pcorrect">${p3[2]}/10</p><div class="medal bronze">3</div><div class="pbar pb3"></div></div>
+      </div>
+    </div>`;
+  });
+}
+
+// ════════════════════════════════
+// PLANIFICACIÓN
+// ════════════════════════════════
+const P_MODS_NAMES=['Planificación','Gest. Productos','Act. Complement.','Planif./Proyectos','Ingresos/Tercerz.'];
+const P_MODS_NUMS=['Módulo 1','Módulo 2','Módulo 3','Módulo 4','Módulo 5'];
+const P_RAW=[
+  {mod:0,rows:[['echiluiza',8777,9,1],['raacosta',8544,9,1],['durbano',8442,9,1],['klmartinez',8433,9,1],['wsalazar',8432,9,1],['lgaibor',8426,9,1],['sagarcia',8339,9,1],['pluna',8291,9,1],['abguallpa',7975,9,1],['ansanchez',7709,8,2],['cdalmeida',7638,8,2],['jkleon',7605,8,2],['sortiz',7597,8,2],['morozco',7534,8,2],['jcamalle',7329,8,2],['cralarcon',7231,8,2],['mspalma',6994,8,2],['aonate',6987,8,2],['kremache',6761,8,2],['kcorrea',6709,7,3],['mvaldez',6291,7,3],['dagallardo',6275,7,3],['vcruz',6185,7,3],['sbaque',6059,7,3],['jkguaman',5713,6,4],['mamartinezv',5669,6,4],['ealopezt',5668,7,3],['dvera',5665,6,4],['erchoez',5528,6,4],['jlcastillot',5269,6,4],['aarroyo',5172,6,4],['amguzman',4580,5,5],['wgaona',4317,5,5],['dcoronel',4184,5,5],['bsangolqui',3776,4,6],['vtacuri',3678,4,6],['aavellan',3652,4,6],['esrivera',3430,4,6]]},
+  {mod:1,rows:[['cdalmeida',8637,9,1],['dvera',8089,9,1],['cralarcon',7919,9,1],['aavellan',7429,8,2],['lgaibor',7373,8,2],['erchoez',7365,8,2],['dcoronel',7201,8,2],['durbano',7149,8,2],['morozco',7038,8,2],['kcorrea',6702,7,3],['abguallpa',6565,7,3],['vcruz',6508,7,3],['dagallardo',6493,7,3],['raacosta',6471,7,3],['bsangolqui',6433,7,3],['jlcastillot',6429,7,3],['jkguaman',6107,7,3],['vcarrillo',6020,7,3],['ansanchez',5901,7,3],['jkleon',5823,6,4],['sortiz',5775,6,4],['jcamalle',5739,6,4],['echiluiza',5699,6,4],['femoran',5699,6,4],['ealopezt',5486,7,3],['amguzman',5230,7,3],['sbaque',5172,6,4],['aarroyo',5132,7,3],['kremache',5059,6,4],['aonate',5020,6,4],['mvaldez',4637,6,4],['klmartinez',4560,5,5],['esrivera',4225,6,4],['clhidalgo',4174,5,5],['wgaona',4127,5,5],['pluna',3949,5,5],['wsalazar',3741,4,6],['vtacuri',3544,4,6],['mspalma',2553,3,7],['mamartinezv',990,1,9]]},
+  {mod:2,rows:[['femoran',8470,9,1],['sortiz',8382,9,1],['cralarcon',8125,9,1],['jkleon',7738,8,2],['lgaibor',7722,8,2],['echiluiza',7674,8,2],['dagallardo',7615,8,2],['wsalazar',7386,8,2],['vcarrillo',6973,8,2],['kremache',6844,8,2],['cdalmeida',6802,7,3],['raacosta',6655,7,3],['jcamalle',6654,7,3],['aonate',6379,8,2],['klmartinez',6271,7,3],['mvaldez',6257,7,3],['sagarcia',6225,7,3],['vcruz',6074,7,3],['abguallpa',6031,7,3],['bsangolqui',5958,7,3],['clhidalgo',5908,7,3],['erchoez',5867,7,3],['wgaona',5843,7,3],['ealopezt',5842,7,3],['aarroyo',5791,7,3],['mamartinezv',5637,6,4],['dvera',5545,6,4],['durbano',5518,6,4],['pluna',5474,7,3],['kcorrea',5453,6,4],['jlcastillot',5357,7,3],['ansanchez',5334,6,4],['dcoronel',5279,6,4],['amguzman',5167,6,4],['esrivera',4853,6,4],['vtacuri',4667,6,4],['mspalma',4554,5,5],['jkguaman',4395,5,5],['morozco',3848,4,6],['aavellan',3590,4,6]]},
+  {mod:3,rows:[['cdalmeida',9748,10,0],['kcorrea',9704,10,0],['dagallardo',9678,10,0],['wsalazar',9571,10,0],['vcarrillo',9514,10,0],['sortiz',9512,10,0],['jkguaman',9478,10,0],['dvera',9367,10,0],['ansanchez',9259,10,0],['bsangolqui',9246,10,0],['abguallpa',9082,10,0],['mspalma',8947,10,0],['clhidalgo',8837,10,0],['jcamalle',8571,9,1],['sagarcia',8566,10,0],['jalbarracin',8559,9,1],['lgaibor',8537,9,1],['femoran',8499,9,1],['pluna',8477,9,1],['dcoronel',8429,9,1],['vcruz',8335,9,1],['wgaona',7909,9,1],['jlcastillot',7861,10,0],['esrivera',7806,9,1],['raacosta',7681,8,2],['morozco',7636,8,2],['durbano',7488,8,2],['mvaldez',7294,8,2],['erchoez',7250,8,2],['sbaque',7083,8,2],['aarroyo',7054,9,1],['aonate',7009,9,1],['vtacuri',6795,8,2],['jkleon',6756,7,3],['ealopezt',6072,7,3],['aavellan',5762,6,4],['klmartinez',5484,6,4],['cralarcon',5393,6,4],['amguzman',5356,6,4],['mamartinezv',4866,5,5],['kremache',3741,4,6]]},
+  {mod:4,rows:[['cdalmeida',9702,10,0],['ealopezt',9470,10,0],['abguallpa',9279,10,0],['femoran',9118,10,0],['sortiz',9116,10,0],['bsangolqui',9037,10,0],['aonate',8983,10,0],['dvera',8740,10,0],['jkguaman',8625,9,1],['ggavilanez',8558,9,1],['jcamalle',8548,9,1],['jkleon',8455,9,1],['sagarcia',8440,9,1],['cralarcon',8239,9,1],['mvaldez',8158,9,1],['kremache',7881,9,1],['vcarrillo',7754,9,1],['durbano',7697,9,1],['morozco',7679,9,1],['aarroyo',7673,10,0],['echiluiza',7617,8,2],['mamartinezv',7590,8,2],['kcorrea',7580,8,2],['erchoez',7422,8,2],['klmartinez',7359,8,2],['lgaibor',7318,8,2],['amguzman',7288,8,2],['wsalazar',7108,8,2],['ansanchez',7063,8,2],['esrivera',7045,8,2],['clhidalgo',6810,9,1],['pluna',6682,8,2],['wgaona',6342,8,2],['jlcastillot',5979,8,2],['sbaque',5945,8,2],['jalbarracin',5530,6,4],['mspalma',5345,7,3],['vtacuri',4857,6,4],['aavellan',3670,4,6],['raacosta',0,0,10]]}
+];
+
+const pPlayers = buildPlayers(P_RAW);
+const pModAvgs = P_RAW.map(({rows})=>{const v=rows.filter(r=>r[1]>0);return Math.round(v.reduce((a,r)=>a+r[1],0)/v.length);});
+const pModAcAvg= P_RAW.map(({rows})=>{const v=rows.filter(r=>r[1]>0);return +(v.reduce((a,r)=>a+r[2],0)/v.length).toFixed(1);});
+
+(function(){
+  const a=pPlayers.filter(p=>p.modCount>=1);
+  document.getElementById('p-kUniq').textContent=a.length;
+  document.getElementById('p-kAvg').textContent=Math.round(a.reduce((s,p)=>s+p.avgScore,0)/a.length).toLocaleString();
+  let tc=0,ta=0;a.forEach(p=>Object.values(p.mods).forEach(m=>{tc+=m.correct;ta+=m.correct+m.incorrect;}));
+  document.getElementById('p-kAcc').textContent=Math.round(tc/ta*100)+'%';
 })();
 
-// ════════════════════════════════
-// SECCIÓN: MÓDULOS
-// ════════════════════════════════
-const PODIOS = [
-  {i:0,top:[['echiluiza',8777,'9/10'],['raacosta',8544,'9/10'],['durbano',8442,'9/10']]},
-  {i:1,top:[['cdalmeida',8637,'9/10'],['DVera',8089,'9/10'],['Cralarcon',7919,'9/10']]},
-  {i:2,top:[['femoran',8470,'9/10'],['Sortiz',8382,'9/10'],['Cralarcon',8125,'9/10']]},
-  {i:3,top:[['cdalmeida',9748,'10/10'],['kcorrea',9704,'10/10'],['dagallardo',9678,'10/10']]},
-  {i:4,top:[['cdalmeida',9702,'10/10'],['ealopezt',9470,'10/10'],['abguallpa',9279,'10/10']]}
-];
-const modNums=['Módulo 1','Módulo 2','Módulo 3','Módulo 4','Módulo 5'];
-const podCont=document.getElementById('modPodios');
-PODIOS.forEach(({i,top})=>{
-  const[p1,p2,p3]=top;
-  podCont.innerHTML+=`<div class="mod-card">
-    <div class="mod-card-num">${modNums[i]}</div>
-    <div class="mod-card-name">${MODS_NAMES[i]}</div>
-    <div class="podium">
-      <div class="pl"><p class="pname">${p2[0]}</p><p class="pscore">${Number(p2[1]).toLocaleString()}</p><p class="pcorrect">${p2[2]}</p><div class="medal silver">2</div><div class="pbar pb2"></div></div>
-      <div class="pl"><p class="pname">${p1[0]}</p><p class="pscore">${Number(p1[1]).toLocaleString()}</p><p class="pcorrect">${p1[2]}</p><div class="medal gold">1</div><div class="pbar pb1"></div></div>
-      <div class="pl"><p class="pname">${p3[0]}</p><p class="pscore">${Number(p3[1]).toLocaleString()}</p><p class="pcorrect">${p3[2]}</p><div class="medal bronze">3</div><div class="pbar pb3"></div></div>
-    </div>
-  </div>`;
-});
+let pTc=0,pTa=0;
+pPlayers.filter(p=>p.modCount>=1).forEach(p=>Object.values(p.mods).forEach(m=>{pTc+=m.correct;pTa+=m.correct+m.incorrect;}));
+buildBarLbl('p-cMod',P_MODS_NAMES,pModAvgs,'#1a73c8',10000);
+buildDoughnut('p-cPie',Math.round(pTc/pTa*100));
+buildBarLbl('p-cAciertos',P_MODS_NAMES,pModAcAvg,'#5b2d8e',10);
+buildMaxChart('p-cMax',P_MODS_NAMES,P_RAW);
+buildPodiosFuncs('p-',P_RAW,P_MODS_NAMES,P_MODS_NUMS,'p-modPodios');
+const pModRank = buildModuloRankFuncs('p-',P_RAW,P_MODS_NAMES,P_MODS_NUMS);
+const pTableFuncs = buildTableFuncs('p-',pPlayers,P_MODS_NAMES);
 
-// Botones de tab por módulo
-let activeModIdx = 0;
-const btnCont = document.getElementById('modTabBtns');
-MODS_NAMES.forEach((name,i)=>{
-  const btn = document.createElement('button');
-  btn.textContent = `${modNums[i]} · ${name}`;
-  btn.style.cssText = 'padding:6px 14px;border-radius:8px;border:1px solid var(--gray-bd);background:var(--white);color:var(--navy);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;';
-  if(i===0){btn.style.background='var(--navy)';btn.style.color='#fff';btn.style.borderColor='var(--navy)';}
-  btn.onclick = ()=>{
-    activeModIdx=i;
-    document.querySelectorAll('#modTabBtns button').forEach((b,bi)=>{
-      b.style.background=bi===i?'var(--navy)':'var(--white)';
-      b.style.color=bi===i?'#fff':'var(--navy)';
-      b.style.borderColor=bi===i?'var(--navy)':'var(--gray-bd)';
-    });
-    renderModuloRanking(i);
-  };
-  btnCont.appendChild(btn);
-});
+function pRenderTable(){pTableFuncs.render();}
+function pSortTable(k){pTableFuncs.sort(k);}
+function pResetFilters(){pTableFuncs.reset();}
+function pToggleVerTodos(){pTableFuncs.toggleAll();}
+function pRenderModuloRanking(idx){pModRank.render(idx);}
+let pActiveModIdx=0;
 
-function renderModuloRanking(modIdx){
-  document.getElementById('modRankTitle').textContent = `Ranking — ${modNums[modIdx]} · ${MODS_NAMES[modIdx]}`;
-  const rows = RAW[modIdx].rows.filter(r=>r[1]>0);
-  document.getElementById('modRankSub').textContent = `${rows.length} participantes`;
-  const tbody = document.getElementById('modRankTbl');
-  tbody.innerHTML='';
-  rows.forEach(([name,score,correct,incorrect],i)=>{
-    const badge = correct===10?'<span class="badge b-green">10/10</span>':correct>=9?'<span class="badge b-blue">9/10</span>':correct>=8?'<span class="badge b-blue">8/10</span>':correct>=7?'<span class="badge b-amber">7/10</span>':'<span class="badge b-red">≤6/10</span>';
-    const errBadge = incorrect>0?`<span class="badge b-red">${incorrect}</span>`:'<span class="badge b-green">0</span>';
-    tbody.innerHTML+=`<tr>
-      <td style="color:var(--text3);font-weight:600">${i+1}</td>
-      <td class="player-name">${name}</td>
-      <td><strong>${score.toLocaleString()}</strong></td>
-      <td>${badge}</td>
-      <td>${errBadge}</td>
-    </tr>`;
-  });
-}
-renderModuloRanking(0);
-
-// ════════════════════════════════
-// SECCIÓN: TOP 10 — FILTROS + TABLA
-// ════════════════════════════════
-let sortKey='score', sortDir=-1;
-let fMod='', fEstado='', fNivel='', fJugador='';
-let showAll = false;
-
-const jugSel = document.getElementById('fJugador');
-[...allPlayers].sort((a,b)=>a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-  .forEach(p=>{ const o=document.createElement('option'); o.value=p.name.toLowerCase(); o.textContent=p.name; jugSel.appendChild(o); });
-
-function getFiltered(){
-  return allPlayers.filter(p=>{
-    if(fJugador!=='' && p.name.toLowerCase()!==fJugador) return false;
-    if(fMod===''){if(p.modCount<2) return false;}
-    else{if(!p.mods[+fMod]) return false;}
-    if(fEstado!=='' && p.estadoKey!==fEstado) return false;
-    if(fNivel!==''){
-      if(fNivel==='lte6'&&p.nivelKey!=='lte6') return false;
-      if(fNivel!=='lte6'&&p.nivelKey!==fNivel) return false;
-    }
-    return true;
-  });
-}
-
-function toggleVerTodos(){
-  showAll = !showAll;
-  const btn = document.getElementById('btnVerTodos');
-  btn.textContent = showAll ? 'Ver top 10' : 'Ver todos';
-  renderTable();
-}
-
-function renderTable(){
-  let players = getFiltered();
-
-  // Ordenar: descendente por defecto (mejores primero)
-  players.sort((a,b)=>{
-    if(sortKey==='name'){
-      const cmp = a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      return sortDir === 1 ? cmp : -cmp;
-    }
-    const keys={rank:'avgScore',mods:'modCount',score:'avgScore',correct:'avgCorrect',golds:'golds'};
-    const va = a[keys[sortKey]], vb = b[keys[sortKey]];
-    return sortDir === 1 ? va - vb : vb - va;
-  });
-
-  const total = players.length;
-  const hayFiltros = [fMod,fEstado,fNivel,fJugador].some(f=>f!=='');
-  // Sin filtros: mostrar top 10 a menos que se pida ver todos
-  const visibles = (!showAll && !hayFiltros) ? players.slice(0,10) : players;
-
-  const actFiltros = [fMod,fEstado,fNivel,fJugador].filter(f=>f!=='').length;
-  document.getElementById('filterCount').textContent = actFiltros>0
-    ? `${total} jugador${total!==1?'es':''} · ${actFiltros} filtro${actFiltros>1?'s':''} activo${actFiltros>1?'s':''}`
-    : showAll ? `${total} jugadores (todos)` : `Top 10 de ${total} jugadores`;
-
-  document.getElementById('tableSubtitle').textContent = fMod!==''
-    ? `Filtrado: ${MODS_NAMES[+fMod]}`
-    : showAll ? 'Todos los jugadores · mín. 2 módulos' : 'Top 10 · promedio de puntaje · mín. 2 módulos';
-
-  const btn = document.getElementById('btnVerTodos');
-  btn.style.display = hayFiltros ? 'none' : 'inline-block';
-  btn.textContent = showAll ? 'Ver top 10' : 'Ver todos';
-
-  const tbody = document.getElementById('mainTbl');
-  tbody.innerHTML = '';
-
-  if(visibles.length===0){
-    tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div>🔍</div>Sin resultados con los filtros seleccionados.</div></td></tr>';
-    return;
-  }
-
-  visibles.forEach((p,i)=>{
-    let sc, cr;
-    if(fMod!==''&&p.mods[+fMod]){
-      const m=p.mods[+fMod]; sc=m.score.toLocaleString(); cr=m.correct+'/10';
-    } else {
-      sc=p.avgScore.toLocaleString(); cr=p.avgCorrect+'/10';
-    }
-    const rowStyle = i===0?'background:#fffbf0;':i===1?'background:#fafbff;':i===2?'background:#fff8f5;':'';
-    const rankDisplay = i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span style="color:var(--text3);font-weight:600">${i+1}</span>`;
-    tbody.innerHTML+=`<tr style="${rowStyle}">
-      <td style="font-size:13px;text-align:center;">${rankDisplay}</td>
-      <td class="player-name">${p.name}</td>
-      <td>${p.modCount}</td>
-      <td><strong>${sc}</strong></td>
-      <td>${cr}</td>
-      <td>${p.goldBadge}</td>
-      <td>${p.estado}</td>
-      <td>${p.nivelLabel}</td>
-    </tr>`;
-  });
-
-  if(!showAll && !hayFiltros && total>10){
-    tbody.innerHTML+=`<tr>
-      <td colspan="8" style="text-align:center;padding:12px;color:var(--text3);font-size:11px;background:var(--gray-bg);border-top:1px dashed var(--gray-bd);">
-        ${total-10} jugadores más ·
-        <span onclick="toggleVerTodos()" style="color:var(--blue);cursor:pointer;font-weight:600;text-decoration:underline;">Ver todos</span>
-      </td>
-    </tr>`;
-  }
-
-  ['rank','name','mods','score','correct','golds'].forEach(k=>{
-    const el=document.getElementById('si-'+k);
-    if(!el) return;
-    el.textContent = k===sortKey ? (sortDir===1?' ↑':' ↓') : ' ↕';
-    el.parentElement.classList.toggle('sorted', k===sortKey);
-  });
-}
-function sortTable(key){
-  if(sortKey===key) sortDir*=-1;
-  else { sortKey=key; sortDir=-1; }
-  renderTable();
-}
-function resetFilters(){
-  fMod='';fEstado='';fNivel='';fJugador='';showAll=false;
-  ['fMod','fEstado','fNivel','fJugador'].forEach(id=>document.getElementById(id).value='');
-  renderTable();
-}
-document.getElementById('fJugador').addEventListener('change',e=>{fJugador=e.target.value;renderTable();});
-document.getElementById('fMod').addEventListener('change',e=>{fMod=e.target.value;renderTable();});
-document.getElementById('fEstado').addEventListener('change',e=>{fEstado=e.target.value;renderTable();});
-document.getElementById('fNivel').addEventListener('change',e=>{fNivel=e.target.value;renderTable();});
-renderTable();
-
-// ════════════════════════════════
-// SECCIÓN: REFUERZO
-// ════════════════════════════════
-function renderRefuerzo(){
-  const weak = allPlayers.filter(p=>p.minCorrect<=6).sort((a,b)=>a.minCorrect-b.minCorrect);
-  const criticos  = weak.filter(p=>p.minCorrect<=4).length;
-  const refuerzo  = weak.filter(p=>p.minCorrect>4).length;
-  document.getElementById('kCritico').textContent = criticos;
-  document.getElementById('kRefuerzo').textContent= refuerzo;
-  // Módulo más débil en promedio
-  const modDebilIdx = modAciertoAvg.indexOf(Math.min(...modAciertoAvg));
-  document.getElementById('kModDebil').textContent   = modNums[modDebilIdx];
-  document.getElementById('kModDebilSub').textContent= MODS_NAMES[modDebilIdx];
-  const tbody=document.getElementById('weakTbl');
-  tbody.innerHTML='';
+function pRenderRefuerzo(){
+  const pModAciertoAvg=pModAcAvg;
+  const weak=pPlayers.filter(p=>p.minCorrect<=6).sort((a,b)=>a.minCorrect-b.minCorrect);
+  document.getElementById('p-kCritico').textContent=weak.filter(p=>p.minCorrect<=4).length;
+  document.getElementById('p-kRefuerzo').textContent=weak.filter(p=>p.minCorrect>4).length;
+  const modDebilIdx=pModAciertoAvg.indexOf(Math.min(...pModAciertoAvg));
+  document.getElementById('p-kModDebil').textContent=P_MODS_NUMS[modDebilIdx];
+  document.getElementById('p-kModDebilSub').textContent=P_MODS_NAMES[modDebilIdx];
+  const tbody=document.getElementById('p-weakTbl');tbody.innerHTML='';
   weak.forEach(p=>{
     const[mi,md]=p.minModKey;
     const st=md.correct<=4?'<span class="badge b-red">Crítico</span>':'<span class="badge b-amber">Refuerzo</span>';
-    tbody.innerHTML+=`<tr>
-      <td class="player-name">${p.name}</td>
-      <td style="color:var(--text2)">${MODS_NAMES[+mi]}</td>
-      <td>${md.correct}/10</td>
-      <td>${md.score.toLocaleString()}</td>
-      <td>${st}</td>
-    </tr>`;
+    tbody.innerHTML+=`<tr><td class="player-name">${p.name}</td><td style="color:var(--text2)">${P_MODS_NAMES[+mi]}</td><td>${md.correct}/10</td><td>${md.score.toLocaleString()}</td><td>${st}</td></tr>`;
   });
 }
+pTableFuncs.render();
+
+// ════════════════════════════════
+// IMPLEMENTACIÓN
+// ════════════════════════════════
+const I_MODS_NAMES=['INSP 30%','GS','Privados','Públicos'];
+const I_MODS_FULL=['Módulo 1 — INSP 30%','Módulo 2 — GS','Módulo 3 — Privados','Módulo 4 — Públicos'];
+const I_MODS_NUMS=['Módulo 1','Módulo 2','Módulo 3','Módulo 4'];
+const I_RAW=[
+  {mod:0,rows:[['ggavilanez',9758,10,0],['Wsalazar',9634,10,0],['DVera',9522,10,0],['femoran',9464,10,0],['Mvaldez',9348,10,0],['jcamalle',9342,10,0],['echiluiza',9242,10,0],['ealopezt',8994,10,0],['aonate',8866,10,0],['kcorrea',8752,9,1],['aldelgado',8694,10,0],['raacosta',8659,10,0],['mamartinezv',8637,9,1],['vtacuri',8579,9,1],['lgaibor',8551,9,1],['abguallpa',8470,9,1],['PLUNA',8463,9,1],['Sagarcia',8452,9,1],['erchoez',8256,9,1],['kremache',8247,9,1],['Jkguaman',8158,9,1],['esrivera',7948,9,1],['jlcastillot',7709,10,0],['morozco',7669,9,1],['cdalmeida',7554,8,2],['aarroyo',7536,10,0],['bsangolqui',7477,8,2],['aavellan',7372,8,2],['Klmartinez',7366,8,2],['jalbarracin',7334,8,2],['durbano',7234,8,2],['vcarrillo',6477,7,3],['clhidalgo',6378,8,2],['mspalma',6273,8,2],['dagallardo',6253,7,3],['Cralarcon',6152,7,3],['sbaque',6151,7,3],['dcoronel',6037,7,3],['ansanchez',6007,7,1],['Sortiz',5953,7,3],['amguzman',5409,6,4],['vcruz',5161,6,4],['wgaona',3727,5,5]]},
+  {mod:1,rows:[['echiluiza',8791,9,1],['jcamalle',8650,10,0],['Wsalazar',8631,9,1],['jalbarracin',8426,9,1],['raacosta',8007,9,1],['femoran',7765,8,2],['lgaibor',7709,8,2],['Sortiz',7310,8,2],['dagallardo',7288,9,1],['abguallpa',6961,8,2],['kcorrea',6746,7,3],['ggavilanez',6700,7,3],['Sagarcia',6649,7,3],['mamartinezv',6648,7,3],['kremache',6466,7,3],['vtacuri',6429,7,3],['Bsangolqui',6381,7,3],['jlcastillot',6167,8,2],['aldelgado',6055,7,3],['Mvaldez',6049,7,3],['dcoronel',6005,7,3],['morozco',5918,7,3],['DVera',5742,6,4],['Jkguaman',5728,7,3],['PLUNA',5684,6,4],['ansanchez',5625,7,3],['cdalmeida',5594,6,4],['vcarrillo',5574,6,4],['clhidalgo',5567,8,2],['esrivera',5564,7,3],['aarroyo',5546,8,2],['durbano',5534,6,4],['amguzman',5534,6,4],['vcruz',5526,6,4],['aonate',5501,6,4],['ealopezt',5458,6,4],['erchoez',5456,6,4],['aavellab',5312,6,4],['Klmartinez',4513,5,5],['mspalma',4320,6,4],['Melany Delgado',4260,5,5],['sbaque',4229,5,5],['wgaona',2760,3,7]]},
+  {mod:2,rows:[['kcorrea',9701,10,0],['Lgaibor',9499,10,0],['jcamalle',9300,10,0],['Pluna',9108,10,0],['bsangolqui',8749,10,0],['morozco',8667,10,0],['echiluiza',8655,9,1],['femoran',8600,9,1],['aonate',8588,10,0],['mamartinezv',8568,9,1],['DVera',8555,9,1],['kremache',8546,9,1],['Wsalazar',8424,9,1],['Mvaldez',8405,9,1],['abguallpa',8397,9,1],['ggavilanez',8326,9,1],['vtacuri',8276,9,1],['jkleon',7729,8,2],['amguzman',7664,9,1],['ansanchez',7661,9,1],['esrivera',7588,8,2],['erchoez',7576,9,1],['aavellan',7558,8,2],['cdalmeida',7555,8,2],['sortiz',7376,8,2],['jkguaman',7285,8,2],['ealopezt',7236,9,1],['aldelgado',7182,8,2],['dagallardo',7111,9,1],['durbano',6974,8,2],['aarroyo',6945,9,1],['jlcastillot',6866,9,1],['clhidalgo',6725,9,1],['jalbarracin',6513,8,2],['vcarrillo',6211,7,3],['mydelgado',6063,7,3],['vcruz',6054,7,3],['mspalma',5824,7,3],['sbaque',5572,8,2],['dcoronel',5190,6,4]]},
+  {mod:3,rows:[['aavellan',7840,8,0],['kremache',7772,8,0],['jkleon',7728,8,0],['dcoronel',7663,8,0],['amguzman',6860,7,1],['jcamalle',6800,8,0],['echiluiza',6616,7,1],['esrivera',6536,7,1],['cdalmeida',6492,7,1],['Bsangolqui',6490,7,1],['erchoez',6335,7,1],['DVERA',6327,7,1],['abguallpa',6290,7,1],['sortiz',6116,7,1],['ansanchez',5795,7,1],['Cralarcon',5723,7,1],['Lgaibor',5601,7,1],['Clhidalgo',5415,7,1],['ggavilanez',5246,6,2],['kcorrea',5186,6,2],['aarroyo',5026,7,1],['raacosta',4957,6,2],['femoran',4767,5,3],['jlcastillot',4753,7,1],['Sagarcia',4621,5,3],['vtacuri',4444,5,3],['Pluna',4346,5,3],['Mvaldez',4104,5,3],['ealopezt',4016,6,2],['aonate',3933,6,2],['Jkguaman',3860,4,4],['mamartinezv',3830,4,4],['dagallardo',3592,5,3],['vcruz',3351,4,4],['vcarrillo',3298,4,4],['aldelgado',2763,3,2],['Wsalazar',2762,3,5],['morozco',1770,2,6],['jalbarracin',1623,2,6],['durbano',1418,2,6],['mydelgado',1301,2,6],['sbaque',1288,2,6],['mspalma',622,1,7]]}
+];
+
+const iPlayers = buildPlayers(I_RAW);
+const iModAvgs = I_RAW.map(({rows})=>{const v=rows.filter(r=>r[1]>0);return Math.round(v.reduce((a,r)=>a+r[1],0)/v.length);});
+const iModAcAvg= I_RAW.map(({rows})=>{const v=rows.filter(r=>r[1]>0);return +(v.reduce((a,r)=>a+r[2],0)/v.length).toFixed(1);});
+
+let iChartsBuilt=false;
+function iBuildCharts(){
+  const a=iPlayers.filter(p=>p.modCount>=1);
+  document.getElementById('i-kUniq').textContent=a.length;
+  document.getElementById('i-kAvg').textContent=Math.round(a.reduce((s,p)=>s+p.avgScore,0)/a.length).toLocaleString();
+  let tc=0,ta=0;a.forEach(p=>Object.values(p.mods).forEach(m=>{tc+=m.correct;ta+=m.correct+m.incorrect;}));
+  document.getElementById('i-kAcc').textContent=Math.round(tc/ta*100)+'%';
+  const best=a.reduce((b,p)=>p.maxScore>b.score?{score:p.maxScore,name:p.name}:b,{score:0,name:'—'});
+  document.getElementById('i-kMax').textContent=best.score.toLocaleString();
+  document.getElementById('i-kMaxSub').textContent=best.name;
+  let itc=0,ita=0;a.forEach(p=>Object.values(p.mods).forEach(m=>{itc+=m.correct;ita+=m.correct+m.incorrect;}));
+  buildBarLbl('i-cMod',I_MODS_NAMES,iModAvgs,'#1a73c8',10000);
+  buildDoughnut('i-cPie',Math.round(itc/ita*100));
+  buildBarLbl('i-cAciertos',I_MODS_NAMES,iModAcAvg,'#5b2d8e',10);
+  buildMaxChart('i-cMax',I_MODS_NAMES,I_RAW);
+}
+
+buildPodiosFuncs('i-',I_RAW,I_MODS_NAMES,I_MODS_NUMS,'i-modPodios');
+const iModRank = buildModuloRankFuncs('i-',I_RAW,I_MODS_NAMES,I_MODS_NUMS);
+const iTableFuncs = buildTableFuncs('i-',iPlayers,I_MODS_NAMES);
+
+function iRenderTable(){iTableFuncs.render();}
+function iSortTable(k){iTableFuncs.sort(k);}
+function iResetFilters(){iTableFuncs.reset();}
+function iToggleVerTodos(){iTableFuncs.toggleAll();}
+function iRenderModuloRanking(idx){iModRank.render(idx);}
+let iActiveModIdx=0;
+
+function iRenderPodio(){
+  const winners=[];
+  I_RAW.forEach(({mod,rows})=>{const v=rows.filter(r=>r[1]>0);if(!v.length)return;const[name,score,correct]=v[0];winners.push({name,score,correct,mod});});
+  const wMap={};
+  winners.forEach(w=>{const k=nrm(w.name);if(!wMap[k])wMap[k]={name:w.name,golds:0,maxScore:0,mods:[]};wMap[k].golds++;wMap[k].mods.push(I_MODS_NAMES[w.mod]);if(w.score>wMap[k].maxScore)wMap[k].maxScore=w.score;});
+  const sorted=Object.values(wMap).sort((a,b)=>b.maxScore-a.maxScore);
+  const[p1,p2,p3]=sorted;
+  document.getElementById('i-genPodioWrap').innerHTML=`<div class="gen-podium">
+    <div class="gen-pl"><p class="gen-name">${p2.name}</p><p class="gen-score">${p2.maxScore.toLocaleString()} pts</p><p class="gen-detail">1.º en ${p2.mods.join(', ')}</p><div class="gen-medal silver">2</div><div class="gen-bar gb2"></div></div>
+    <div class="gen-pl">${p1.golds>1?`<span class="pill-gold">🥇 ${p1.golds} oros · Campeón</span>`:'<span class="pill-gold">🥇 Campeón</span>'}<p class="gen-name">${p1.name}</p><p class="gen-score">${p1.maxScore.toLocaleString()} pts</p><p class="gen-detail">1.º en ${p1.mods.join(', ')}</p><div class="gen-medal gold">1</div><div class="gen-bar gb1"></div></div>
+    <div class="gen-pl"><p class="gen-name">${p3.name}</p><p class="gen-score">${p3.maxScore.toLocaleString()} pts</p><p class="gen-detail">1.º en ${p3.mods.join(', ')}</p><div class="gen-medal bronze">3</div><div class="gen-bar gb3"></div></div>
+  </div><p style="font-size:10px;color:var(--text3);margin-top:14px;border-top:1px solid var(--gray-bd);padding-top:10px;">Criterio: rank 1 en al menos un módulo · desempate por puntaje más alto</p>`;
+  const tbody=document.getElementById('i-ganTbl');tbody.innerHTML='';
+  winners.forEach(w=>{
+    const cBadge=w.correct>=10?'<span class="badge b-green">10/10</span>':`<span class="badge b-blue">${w.correct}/10</span>`;
+    const rowBg=w.correct>=10?'background:#f6fef9;':'';
+    const res=w.correct>=10?'<span style="color:var(--green);font-weight:600;font-size:11px;">✓ Puntaje perfecto</span>':`<span style="font-size:11px;color:var(--text3);">Ganó con ${10-w.correct} error(es)</span>`;
+    tbody.innerHTML+=`<tr style="${rowBg}"><td>${I_MODS_FULL[w.mod]}</td><td class="player-name">${w.name}</td><td><strong>${w.score.toLocaleString()}</strong></td><td>${cBadge}</td><td>${w.correct>=10?'<span class="badge b-green">0</span>':`<span class="badge b-red">${10-w.correct}</span>`}</td><td>${res}</td></tr>`;
+  });
+}
+
+function iRenderRefuerzo(){
+  const weak=iPlayers.filter(p=>p.minCorrect<=6).sort((a,b)=>a.minCorrect-b.minCorrect);
+  document.getElementById('i-kCritico').textContent=weak.filter(p=>p.minCorrect<=4).length;
+  document.getElementById('i-kRefuerzo').textContent=weak.filter(p=>p.minCorrect>4).length;
+  const modDebilIdx=iModAcAvg.indexOf(Math.min(...iModAcAvg));
+  document.getElementById('i-kModDebil').textContent=I_MODS_NUMS[modDebilIdx];
+  document.getElementById('i-kModDebilSub').textContent=I_MODS_NAMES[modDebilIdx];
+  const tbody=document.getElementById('i-weakTbl');tbody.innerHTML='';
+  weak.forEach(p=>{
+    const[mi,md]=p.minModKey;
+    const st=md.correct<=4?'<span class="badge b-red">Crítico</span>':'<span class="badge b-amber">Refuerzo</span>';
+    tbody.innerHTML+=`<tr><td class="player-name">${p.name}</td><td style="color:var(--text2)">${I_MODS_NAMES[+mi]}</td><td>${md.correct}/10</td><td>${md.score.toLocaleString()}</td><td>${st}</td></tr>`;
+  });
+}
+iTableFuncs.render();
+
+// ════════════════════════════════
+// MÓDULO 00: GLOBAL
+// ════════════════════════════════
+(function buildGlobal(){
+  const gMap = {};
+
+  P_RAW.forEach(({mod, rows}) => {
+    rows.forEach(([p,score,correct,incorrect]) => {
+      if(score===0) return;
+      const k=nrm(p);
+      if(!gMap[k]) gMap[k]={name:p,mods:[],maxScore:0,seccionMejor:null};
+      gMap[k].mods.push({score,correct,incorrect,seccion:'Planificación',modNombre:P_MODS_NAMES[mod]});
+      if(score>gMap[k].maxScore){gMap[k].maxScore=score;gMap[k].seccionMejor='Planificación';}
+    });
+  });
+  I_RAW.forEach(({mod, rows}) => {
+    rows.forEach(([p,score,correct,incorrect]) => {
+      if(score===0) return;
+      const k=nrm(p);
+      if(!gMap[k]) gMap[k]={name:p,mods:[],maxScore:0,seccionMejor:null};
+      gMap[k].mods.push({score,correct,incorrect,seccion:'Implementación',modNombre:I_MODS_NAMES[mod]});
+      if(score>gMap[k].maxScore){gMap[k].maxScore=score;gMap[k].seccionMejor='Implementación';}
+    });
+  });
+
+  const gPlayers = Object.values(gMap).map(p => {
+    const ms=p.mods;
+    const avgScore=Math.round(ms.reduce((a,m)=>a+m.score,0)/ms.length);
+    const avgCorrect=+(ms.reduce((a,m)=>a+m.correct,0)/ms.length).toFixed(1);
+    const minCorrect=Math.min(...ms.map(m=>m.correct));
+    const minMod=ms.slice().sort((a,b)=>a.correct-b.correct)[0];
+    const pct=Math.round(avgCorrect*10);
+    let estado,estadoKey;
+    if(pct>=90){estado='<span class="badge b-green">Excelente</span>';estadoKey='excelente';}
+    else if(pct>=80){estado='<span class="badge b-blue">Bueno</span>';estadoKey='bueno';}
+    else if(pct>=70){estado='<span class="badge b-amber">Regular</span>';estadoKey='regular';}
+    else if(minCorrect<=4){estado='<span class="badge b-red">Crítico</span>';estadoKey='critico';}
+    else{estado='<span class="badge b-amber">Refuerzo</span>';estadoKey='refuerzo';}
+    return{...p,avgScore,avgCorrect,minCorrect,minMod,modCount:ms.length,pct,estado,estadoKey};
+  });
+
+  // KPIs
+  const active=gPlayers.filter(p=>p.modCount>=1);
+  document.getElementById('g-kMods').textContent=9;
+  document.getElementById('g-kUniq').textContent=active.length;
+  document.getElementById('g-kAvg').textContent=Math.round(active.reduce((a,p)=>a+p.avgScore,0)/active.length).toLocaleString();
+  let gtc=0,gta=0; active.forEach(p=>p.mods.forEach(m=>{gtc+=m.correct;gta+=m.correct+m.incorrect;}));
+  document.getElementById('g-kAcc').textContent=Math.round(gtc/gta*100)+'%';
+  const best=active.reduce((b,p)=>p.maxScore>b.maxScore?p:b,{maxScore:0,name:'—',seccionMejor:'—'});
+  document.getElementById('g-kMax').textContent=best.maxScore.toLocaleString();
+  document.getElementById('g-kMaxSub').textContent=best.name+' · '+best.seccionMejor;
+
+  // Gráficos
+  const pAvgG=Math.round(pModAvgs.reduce((a,v)=>a+v,0)/pModAvgs.length);
+  const iAvgG=Math.round(iModAvgs.reduce((a,v)=>a+v,0)/iModAvgs.length);
+  buildBarLbl('g-cComp',['Planificación','Implementación'],[pAvgG,iAvgG],['#1a73c8','#5b2d8e'],10000);
+  buildDoughnut('g-cPie',Math.round(gtc/gta*100));
+  const pAcG=+(pModAcAvg.reduce((a,v)=>a+v,0)/pModAcAvg.length).toFixed(1);
+  const iAcG=+(iModAcAvg.reduce((a,v)=>a+v,0)/iModAcAvg.length).toFixed(1);
+  buildBarLbl('g-cAciertos',['Planificación','Implementación'],[pAcG,iAcG],['#1a73c8','#5b2d8e'],10);
+
+  // Podio y tabla
+  const TOTAL_MODS = P_RAW.length + I_RAW.length; // 9 módulos activos
+  let gShowAll=false, gSortKey='score', gSortDir=-1;
+
+  // Jugadores elegibles para el podio: completaron TODOS los módulos activos
+  const elegibles = gPlayers.filter(p => p.modCount === TOTAL_MODS);
+
+  // KPI adicional: cuántos completaron todos
+  const kpiComplete = document.createElement('p');
+  kpiComplete.style.cssText='font-size:11px;color:var(--text3);margin-top:10px;';
+  kpiComplete.innerHTML=`<strong>${elegibles.length}</strong> jugadores completaron los ${TOTAL_MODS} módulos y califican para el podio global.`;
+
+  function gRenderTable(){
+    // La tabla muestra elegibles (todos los módulos) ordenados por promedio
+    let players=[...elegibles];
+    players.sort((a,b)=>{
+      if(gSortKey==='name'){const c=a.name.toLowerCase().localeCompare(b.name.toLowerCase());return gSortDir===1?c:-c;}
+      const map2={rank:'avgScore',score:'avgScore',correct:'avgCorrect'};
+      const va=a[map2[gSortKey]||gSortKey],vb=b[map2[gSortKey]||gSortKey];
+      return gSortDir===1?va-vb:vb-va;
+    });
+    const total=players.length;
+    const visibles=gShowAll?players:players.slice(0,10);
+    document.getElementById('g-btnVerTodos').textContent=gShowAll?'Ver top 10':'Ver todos';
+    const tbody=document.getElementById('g-mainTbl');tbody.innerHTML='';
+    if(!visibles.length){
+      tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div>📋</div>Ningún jugador completó todos los módulos aún.</div></td></tr>';
+      return;
+    }
+    visibles.forEach((p,i)=>{
+      const rs=i===0?'background:#fffbf0;':i===1?'background:#fafbff;':i===2?'background:#fff8f5;':'';
+      const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span style="color:var(--text3);font-weight:600">${i+1}</span>`;
+      const secB=p.seccionMejor==='Planificación'?'<span class="badge b-blue" style="font-size:9px">Planif.</span>':'<span class="badge" style="background:var(--purple-lt);color:var(--purple);font-size:9px">Implement.</span>';
+      tbody.innerHTML+=`<tr style="${rs}"><td style="font-size:13px;text-align:center;">${rk}</td><td class="player-name">${p.name}</td><td style="color:var(--text2)">${p.modCount}/${TOTAL_MODS}</td><td><strong>${p.avgScore.toLocaleString()}</strong></td><td>${p.avgCorrect}/10</td><td>${secB}</td><td>${p.estado}</td></tr>`;
+    });
+    if(!gShowAll&&total>10)tbody.innerHTML+=`<tr><td colspan="7" style="text-align:center;padding:12px;color:var(--text3);font-size:11px;background:var(--gray-bg);border-top:1px dashed var(--gray-bd);">${total-10} jugadores más · <span onclick="window.gToggleVerTodos()" style="color:var(--blue);cursor:pointer;font-weight:600;text-decoration:underline;">Ver todos</span></td></tr>`;
+    ['rank','name','score','correct'].forEach(k=>{const el=document.getElementById('g-si-'+k);if(!el)return;el.textContent=k===gSortKey?(gSortDir===1?' ↑':' ↓'):' ↕';el.parentElement.classList.toggle('sorted',k===gSortKey);});
+  }
+
+  window.gRenderPodio=function(){
+    const sorted=[...elegibles].sort((a,b)=>b.avgScore-a.avgScore);
+    const wrap=document.getElementById('g-genPodioWrap');
+
+    if(sorted.length < 3){
+      // No hay suficientes jugadores que completaron todos los módulos
+      wrap.innerHTML=`<div style="text-align:center;padding:40px 20px;">
+        <div style="font-size:36px;margin-bottom:12px;">🏁</div>
+        <p style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:6px;">Podio en construcción</p>
+        <p style="font-size:12px;color:var(--text2);">Solo <strong>${sorted.length}</strong> de los jugadores han completado los <strong>${TOTAL_MODS}</strong> módulos activos.</p>
+        <p style="font-size:11px;color:var(--text3);margin-top:6px;">El podio global se mostrará cuando al menos 3 jugadores completen todos los módulos.</p>
+      </div>`;
+      gRenderTable();
+      return;
+    }
+
+    const[p1,p2,p3]=sorted;
+    const sB=s=>s==='Planificación'?'<span class="badge b-blue" style="font-size:9px">Planif.</span>':'<span class="badge" style="background:var(--purple-lt);color:var(--purple);font-size:9px">Implement.</span>';
+    wrap.innerHTML=`<div class="gen-podium">
+      <div class="gen-pl"><p class="gen-name">${p2.name}</p><p class="gen-score">${p2.avgScore.toLocaleString()} pts prom.</p><p class="gen-detail">${p2.modCount}/${TOTAL_MODS} módulos · ${sB(p2.seccionMejor)}<br>Mejor: ${p2.maxScore.toLocaleString()} pts</p><div class="gen-medal silver">2</div><div class="gen-bar gb2"></div></div>
+      <div class="gen-pl"><span class="pill-gold">🥇 Campeón Global</span><p class="gen-name">${p1.name}</p><p class="gen-score">${p1.avgScore.toLocaleString()} pts prom.</p><p class="gen-detail">${p1.modCount}/${TOTAL_MODS} módulos · ${sB(p1.seccionMejor)}<br>Mejor: ${p1.maxScore.toLocaleString()} pts</p><div class="gen-medal gold">1</div><div class="gen-bar gb1"></div></div>
+      <div class="gen-pl"><p class="gen-name">${p3.name}</p><p class="gen-score">${p3.avgScore.toLocaleString()} pts prom.</p><p class="gen-detail">${p3.modCount}/${TOTAL_MODS} módulos · ${sB(p3.seccionMejor)}<br>Mejor: ${p3.maxScore.toLocaleString()} pts</p><div class="gen-medal bronze">3</div><div class="gen-bar gb3"></div></div>
+    </div>
+    <p style="font-size:10px;color:var(--text3);margin-top:14px;border-top:1px solid var(--gray-bd);padding-top:10px;">
+      ✅ Criterio: solo jugadores que completaron los <strong>${TOTAL_MODS} módulos activos</strong> (Planificación + Implementación) · ordenados por promedio global · desempate por puntaje más alto
+    </p>`;
+    gRenderTable();
+  };
+
+  window.gRenderRefuerzo=function(){
+    const weak=active.filter(p=>p.minCorrect<=6).sort((a,b)=>a.minCorrect-b.minCorrect);
+    document.getElementById('g-kCritico').textContent=weak.filter(p=>p.minCorrect<=4).length;
+    document.getElementById('g-kRefuerzo').textContent=weak.filter(p=>p.minCorrect>4&&p.minCorrect<=6).length;
+    const planifWeak=weak.filter(p=>p.mods.some(m=>m.seccion==='Planificación'&&m.correct<=6)).length;
+    const implWeak=weak.filter(p=>p.mods.some(m=>m.seccion==='Implementación'&&m.correct<=6)).length;
+    document.getElementById('g-kSeccion').textContent=planifWeak>=implWeak?'Planificación':'Implementación';
+    document.getElementById('g-kSeccionSub').textContent=`${Math.max(planifWeak,implWeak)} jugadores con refuerzo`;
+    const allModAc=[...pModAcAvg,...iModAcAvg];
+    const allModNames=[...P_MODS_NAMES.map(n=>'P: '+n),...I_MODS_NAMES.map(n=>'I: '+n)];
+    const debilIdx=allModAc.indexOf(Math.min(...allModAc));
+    document.getElementById('g-kModDebil').textContent=allModNames[debilIdx];
+    document.getElementById('g-kModDebilSub').textContent='Prom. '+allModAc[debilIdx]+'/10';
+    const tbody=document.getElementById('g-weakTbl');tbody.innerHTML='';
+    weak.forEach(p=>{
+      const st=p.minCorrect<=4?'<span class="badge b-red">Crítico</span>':'<span class="badge b-amber">Refuerzo</span>';
+      tbody.innerHTML+=`<tr><td class="player-name">${p.name}</td><td style="color:var(--text2)">${p.minMod.seccion}</td><td style="color:var(--text2)">${p.minMod.modNombre}</td><td>${p.minCorrect}/10</td><td>${p.minMod.score.toLocaleString()}</td><td>${st}</td></tr>`;
+    });
+  };
+
+  window.gToggleVerTodos=function(){gShowAll=!gShowAll;gRenderTable();};
+  window.gSortTable=function(k){if(gSortKey===k)gSortDir*=-1;else{gSortKey=k;gSortDir=-1;}gRenderTable();};
+
+  // Iniciar
+  window.gRenderPodio();
+})();
+
+buildSubnav('global');
 </script>
 </body>
 </html>
