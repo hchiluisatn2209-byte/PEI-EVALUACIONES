@@ -1,4 +1,4 @@
-v<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1079,13 +1079,31 @@ function oRenderPodio(){
   O_RAW.forEach(({mod,rows})=>{const v=rows.filter(r=>r[1]>0);if(!v.length)return;const[name,score,correct]=v[0];winners.push({name,score,correct,mod});});
   const wMap={};
   winners.forEach(w=>{const k=nrm(w.name);if(!wMap[k])wMap[k]={name:w.name,golds:0,maxScore:0,mods:[]};wMap[k].golds++;wMap[k].mods.push(O_MODS_NAMES[w.mod]);if(w.score>wMap[k].maxScore)wMap[k].maxScore=w.score;});
-  const sorted=Object.values(wMap).sort((a,b)=>b.maxScore-a.maxScore);
+  let sorted=Object.values(wMap).sort((a,b)=>b.maxScore-a.maxScore);
+
+  // Si hay menos de 3 ganadores distintos, completar con siguientes mejores scores globales
+  if(sorted.length < 3){
+    const usedKeys = new Set(sorted.map(p=>nrm(p.name)));
+    const extras = [];
+    O_RAW.forEach(({mod,rows})=>{
+      rows.filter(r=>r[1]>0).forEach(([name,score,correct])=>{
+        const k=nrm(name);
+        if(!usedKeys.has(k)){
+          usedKeys.add(k);
+          extras.push({name, maxScore:score, golds:0, mods:[O_MODS_NAMES[mod]]});
+        }
+      });
+    });
+    extras.sort((a,b)=>b.maxScore-a.maxScore);
+    sorted = [...sorted, ...extras].slice(0,3);
+  }
+
   const[p1,p2,p3]=sorted;if(!p1)return;
   document.getElementById('o-genPodioWrap').innerHTML=`<div class="gen-podium">
     <div class="gen-pl"><p class="gen-name">${p2?.name||'—'}</p><p class="gen-score">${p2?.maxScore.toLocaleString()||'—'} pts</p><p class="gen-detail">1.º en ${p2?.mods.join(', ')||'—'}</p><div class="gen-medal silver">2</div><div class="gen-bar gb2"></div></div>
     <div class="gen-pl">${p1.golds>1?`<span class="pill-gold">🥇 ${p1.golds} oros · Campeón</span>`:'<span class="pill-gold">🥇 Campeón O&M</span>'}<p class="gen-name">${p1.name}</p><p class="gen-score">${p1.maxScore.toLocaleString()} pts</p><p class="gen-detail">1.º en ${p1.mods.join(', ')}</p><div class="gen-medal gold">1</div><div class="gen-bar gb1"></div></div>
-    <div class="gen-pl"><p class="gen-name">${p3?.name||'—'}</p><p class="gen-score">${p3?.maxScore.toLocaleString()||'—'} pts</p><p class="gen-detail">1.º en ${p3?.mods.join(', ')||'—'}</p><div class="gen-medal bronze">3</div><div class="gen-bar gb3"></div></div>
-  </div><p style="font-size:10px;color:var(--text3);margin-top:14px;border-top:1px solid var(--gray-bd);padding-top:10px;">Criterio: rank 1 en al menos un módulo · desempate por puntaje más alto</p>`;
+    <div class="gen-pl"><p class="gen-name">${p3?.name||'—'}</p><p class="gen-score">${p3?.maxScore.toLocaleString()||'—'} pts</p><p class="gen-detail">${p3?.golds>0?'1.º en '+p3.mods.join(', '):'2.º lugar global'}</p><div class="gen-medal bronze">3</div><div class="gen-bar gb3"></div></div>
+  </div><p style="font-size:10px;color:var(--text3);margin-top:14px;border-top:1px solid var(--gray-bd);padding-top:10px;">Criterio: rank 1 en al menos un módulo · desempate por puntaje más alto · 3.er lugar: siguiente mejor score global</p>`;
   const tbody=document.getElementById('o-ganTbl');tbody.innerHTML='';
   winners.forEach(w=>{
     const cBadge=w.correct>=10?'<span class="badge b-green">10/10</span>':`<span class="badge b-blue">${w.correct}/10</span>`;
